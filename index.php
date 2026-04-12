@@ -58,8 +58,10 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <?php if ($is_admin): ?>
     <!-- Admin Top Bar -->
     <div class="bg-txt text-bg text-xs py-1.5">
-        <div class="max-w-[36rem] mx-auto px-4">
+        <div class="max-w-[36rem] mx-auto px-4 flex items-center justify-between">
             <a href="/admin/" class="hover:underline">Panou admin →</a>
+            <button onclick="document.getElementById('editPanel').classList.toggle('translate-x-full')"
+                    class="hover:underline transition-colors">Editează live</button>
         </div>
     </div>
     <?php endif; ?>
@@ -68,17 +70,9 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <div class="sticky top-0 z-50 pt-3 px-4">
         <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
             <a href="/" class="text-xl font-bold tracking-tight hover:text-accent transition-colors">#articoolat</a>
-            <div class="flex items-center gap-2">
-                <?php if ($is_admin): ?>
-                <button onclick="document.getElementById('editPanel').classList.toggle('translate-x-full')"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-accent hover:bg-muted/10 transition-colors" title="Editează">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                </button>
-                <?php endif; ?>
-                <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
-                    + Articol nou
-                </a>
-            </div>
+            <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
+                + Articol nou
+            </a>
         </nav>
     </div>
 
