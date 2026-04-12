@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/admin/auth.php';
+$is_admin = is_authenticated();
 
 $db = get_db();
 $settings = load_settings();
@@ -61,6 +63,15 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body class="bg-bg text-txt min-h-screen">
 
+    <?php if ($is_admin): ?>
+    <div class="bg-surface border-b border-muted/20 text-sm">
+        <div class="max-w-3xl mx-auto px-4 py-2 flex items-center justify-between">
+            <span class="text-muted">Admin</span>
+            <a href="/admin/" class="text-accent hover:underline">Panou admin →</a>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Header -->
     <header class="max-w-3xl mx-auto px-4 pt-8 pb-6">
         <div class="flex items-center justify-between">
@@ -76,7 +87,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         </div>
 
         <!-- Tabs -->
-        <nav class="flex gap-1 mt-6 border-b border-surface">
+        <nav class="flex gap-1 mt-6 border-b border-muted/20">
             <a href="/?tab=hot"
                class="px-4 py-2 text-sm font-medium border-b-2 transition-colors <?= $tab === 'hot' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
                 🔥 Hot
@@ -113,7 +124,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php endif; ?>
 
         <?php foreach ($articles as $i => $article): ?>
-        <article class="card-hover flex items-start gap-4 py-4 px-3 rounded-xl <?= $i > 0 ? 'border-t border-surface' : '' ?>">
+        <article class="card-hover flex items-start gap-4 py-4 px-3 rounded-xl <?= $i > 0 ? 'border-t border-muted/20' : '' ?>">
             <!-- Vote button -->
             <div class="flex flex-col items-center pt-1 min-w-[40px]">
                 <button onclick="vote(<?= $article['id'] ?>, this)"
@@ -158,7 +169,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     </main>
 
     <!-- Footer -->
-    <footer class="max-w-3xl mx-auto px-4 py-8 border-t border-surface">
+    <footer class="max-w-3xl mx-auto px-4 py-8 border-t border-muted/20">
         <p class="text-center text-muted text-sm"><?= e($settings['site_footer']) ?></p>
     </footer>
 

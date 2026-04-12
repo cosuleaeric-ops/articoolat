@@ -23,7 +23,7 @@ $tags = get_tags();
             <div>
                 <label class="block text-sm font-medium mb-1.5">Link articol *</label>
                 <input type="url" name="url" id="urlInput" required placeholder="https://..."
-                       class="w-full bg-surface border border-surface rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
+                       class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
                 <p id="fetchStatus" class="text-xs text-muted mt-1 hidden">Se incarca metadata...</p>
             </div>
 
@@ -31,14 +31,14 @@ $tags = get_tags();
             <div>
                 <label class="block text-sm font-medium mb-1.5">Titlu *</label>
                 <input type="text" name="title" id="titleInput" required placeholder="Titlul articolului"
-                       class="w-full bg-surface border border-surface rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
+                       class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
             </div>
 
             <!-- Description -->
             <div>
                 <label class="block text-sm font-medium mb-1.5">Descriere scurta</label>
                 <textarea name="description" id="descInput" rows="3" placeholder="Despre ce e articolul..."
-                          class="w-full bg-surface border border-surface rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+                          class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
             </div>
 
             <!-- Image URL (hidden, auto-filled) -->
@@ -57,7 +57,7 @@ $tags = get_tags();
             <div>
                 <label class="block text-sm font-medium mb-1.5">Categorie</label>
                 <select name="tag"
-                        class="w-full bg-surface border border-surface rounded-lg px-4 py-3 text-txt focus:outline-none focus:border-accent transition-colors">
+                        class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt focus:outline-none focus:border-accent transition-colors">
                     <?php foreach ($tags as $tag): ?>
                     <option value="<?= e($tag) ?>"><?= e($tag) ?></option>
                     <?php endforeach; ?>
@@ -68,7 +68,7 @@ $tags = get_tags();
             <div>
                 <label class="block text-sm font-medium mb-1.5">Numele tau</label>
                 <input type="text" name="submitted_by" placeholder="Anonim"
-                       class="w-full bg-surface border border-surface rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
+                       class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
             </div>
 
             <!-- Submit -->

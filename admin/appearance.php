@@ -44,17 +44,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) 
                     <div>
                         <label class="block text-sm text-muted mb-1">Titlu site</label>
                         <input type="text" name="site_title" value="<?= e($settings['site_title']) ?>"
-                               class="w-full bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                     </div>
                     <div>
                         <label class="block text-sm text-muted mb-1">Subtitlu</label>
                         <input type="text" name="site_subtitle" value="<?= e($settings['site_subtitle']) ?>"
-                               class="w-full bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                     </div>
                     <div>
                         <label class="block text-sm text-muted mb-1">Footer</label>
                         <input type="text" name="site_footer" value="<?= e($settings['site_footer']) ?>"
-                               class="w-full bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) 
                             <input type="color" name="<?= $key ?>" value="<?= e($settings[$key]) ?>"
                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
                             <input type="text" value="<?= e($settings[$key]) ?>" readonly
-                                   class="bg-bg border border-bg rounded px-2 py-1 text-xs text-muted w-20"
+                                   class="bg-white border border-muted/20 rounded px-2 py-1 text-xs text-muted w-20"
                                    onclick="this.previousElementSibling.click()">
                         </div>
                     </div>

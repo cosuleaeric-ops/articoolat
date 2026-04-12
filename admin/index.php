@@ -58,7 +58,7 @@ if (!is_authenticated()):
         <?php endif; ?>
         <form method="POST">
             <input type="password" name="password" required autofocus placeholder="Parola"
-                   class="w-full bg-bg border border-bg rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent mb-4">
+                   class="w-full bg-white border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent mb-4">
             <button type="submit" class="w-full bg-accent text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
                 <?= empty($settings['admin_password_hash']) ? 'Seteaza parola' : 'Conecteaza-te' ?>
             </button>

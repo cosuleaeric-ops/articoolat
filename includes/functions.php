@@ -11,11 +11,11 @@ function load_settings(): array {
         'umami_site_id' => '',
         'umami_script_url' => '',
         'kit_api_key' => '',
-        'color_bg' => '#0f0f0f',
-        'color_surface' => '#1a1a1a',
+        'color_bg' => '#ffffff',
+        'color_surface' => '#f5f5f4',
         'color_accent' => '#f97316',
-        'color_text' => '#e5e5e5',
-        'color_text_muted' => '#737373',
+        'color_text' => '#1c1917',
+        'color_text_muted' => '#78716c',
         'tags' => 'Tehnologie,Startup,Cultură,Știință,Afaceri,Design,Programare,România,Educație,Opinie'
     ];
 

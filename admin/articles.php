@@ -77,19 +77,19 @@ if ($edit_id) {
                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
                 <div>
                     <label class="block text-sm text-muted mb-1">Titlu</label>
-                    <input type="text" name="title" value="<?= e($edit_article['title']) ?>" class="w-full bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                    <input type="text" name="title" value="<?= e($edit_article['title']) ?>" class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                 </div>
                 <div>
                     <label class="block text-sm text-muted mb-1">URL</label>
-                    <input type="url" name="url" value="<?= e($edit_article['url']) ?>" class="w-full bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                    <input type="url" name="url" value="<?= e($edit_article['url']) ?>" class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                 </div>
                 <div>
                     <label class="block text-sm text-muted mb-1">Descriere</label>
-                    <textarea name="description" rows="2" class="w-full bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent resize-none"><?= e($edit_article['description']) ?></textarea>
+                    <textarea name="description" rows="2" class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent resize-none"><?= e($edit_article['description']) ?></textarea>
                 </div>
                 <div>
                     <label class="block text-sm text-muted mb-1">Categorie</label>
-                    <select name="tag" class="bg-bg border border-bg rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                    <select name="tag" class="bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                         <?php foreach ($tags as $t): ?>
                         <option value="<?= e($t) ?>" <?= $edit_article['tag'] === $t ? 'selected' : '' ?>><?= e($t) ?></option>
                         <?php endforeach; ?>
@@ -107,7 +107,7 @@ if ($edit_id) {
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr class="border-b border-bg text-muted text-left">
+                        <tr class="border-b border-muted/20 text-muted text-left">
                             <th class="px-4 py-3 font-medium">Titlu</th>
                             <th class="px-4 py-3 font-medium">Tag</th>
                             <th class="px-4 py-3 font-medium text-center">Voturi</th>
@@ -117,12 +117,12 @@ if ($edit_id) {
                     </thead>
                     <tbody>
                         <?php foreach ($articles as $article): ?>
-                        <tr class="border-b border-bg hover:bg-bg/50 transition-colors">
+                        <tr class="border-b border-muted/20 hover:bg-surface transition-colors">
                             <td class="px-4 py-3">
                                 <a href="<?= e($article['url']) ?>" target="_blank" class="hover:text-accent transition-colors"><?= e(truncate($article['title'], 60)) ?></a>
                                 <div class="text-xs text-muted"><?= e($article['domain']) ?></div>
                             </td>
-                            <td class="px-4 py-3"><span class="bg-bg px-2 py-0.5 rounded text-xs"><?= e($article['tag']) ?></span></td>
+                            <td class="px-4 py-3"><span class="bg-surface px-2 py-0.5 rounded text-xs"><?= e($article['tag']) ?></span></td>
                             <td class="px-4 py-3 text-center font-semibold"><?= $article['votes'] ?></td>
                             <td class="px-4 py-3 text-muted text-xs"><?= date('d.m.Y H:i', strtotime($article['created_at'])) ?></td>
                             <td class="px-4 py-3">
