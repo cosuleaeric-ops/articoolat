@@ -22,5 +22,6 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
-            **/data/**
+            **/data/*.sqlite
+            **/data/settings.json
             **/.claude/**
