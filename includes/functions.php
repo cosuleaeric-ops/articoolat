@@ -9,7 +9,7 @@ function load_settings(): array {
         'site_footer' => 'Articoolat — Pentru cei care preferă să citească.',
         'admin_password_hash' => '',
         'auth_secret' => bin2hex(random_bytes(32)),
-        'ga_measurement_id' => '',
+        'ga_script' => '',
         'kit_api_key' => '',
         'kit_api_secret' => '',
         'color_bg' => '#f3f4f6',

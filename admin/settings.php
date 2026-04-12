@@ -6,7 +6,7 @@ require_auth();
 $settings = load_settings();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) {
-    $settings['ga_measurement_id'] = trim($_POST['ga_measurement_id'] ?? '');
+    $settings['ga_script'] = trim($_POST['ga_script'] ?? '');
     $settings['kit_api_key'] = trim($_POST['kit_api_key'] ?? '');
     $settings['kit_api_secret'] = trim($_POST['kit_api_secret'] ?? '');
 
@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) 
             <!-- Google Analytics -->
             <div class="bg-surface rounded-xl p-6">
                 <h2 class="font-semibold mb-4">Google Analytics</h2>
-                <label class="block text-sm text-muted mb-1">Measurement ID</label>
-                <input type="text" name="ga_measurement_id" value="<?= e($settings['ga_measurement_id'] ?? '') ?>" placeholder="G-XXXXXXXXXX"
-                       class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
+                <label class="block text-sm text-muted mb-1">Script (lipeste tot codul)</label>
+                <textarea name="ga_script" rows="6" placeholder="<!-- Google tag (gtag.js) -->..."
+                          class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent font-mono text-xs resize-none"><?= e($settings['ga_script'] ?? '') ?></textarea>
             </div>
 
             <!-- Kit -->
