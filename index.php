@@ -185,9 +185,11 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                 foreach ($color_fields as $key => $label):
                 ?>
                 <div class="flex items-center gap-2">
-                    <input type="color" name="<?= $key ?>" value="<?= e($settings[$key]) ?>" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
-                    <input type="text" value="<?= e($settings[$key]) ?>" readonly class="w-20 bg-bg border border-muted/20 rounded px-2 py-1 text-xs font-mono"
-                           onclick="this.previousElementSibling.click()">
+                    <input type="color" value="<?= e($settings[$key]) ?>" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent"
+                           oninput="this.nextElementSibling.value=this.value">
+                    <input type="text" name="<?= $key ?>" value="<?= e($settings[$key]) ?>" maxlength="7"
+                           class="w-20 bg-bg border border-muted/20 rounded px-2 py-1 text-xs font-mono focus:outline-none focus:border-accent"
+                           oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))this.previousElementSibling.value=this.value">
                     <span class="text-xs text-muted"><?= $label ?></span>
                 </div>
                 <?php endforeach; ?>
