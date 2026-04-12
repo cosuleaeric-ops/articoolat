@@ -29,7 +29,19 @@ $stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
 $existing = $stmt->execute()->fetchArray();
 
 if ($existing) {
-    echo json_encode(['success' => false, 'error' => 'Ai votat deja']);
+    // Remove vote (unlike)
+    $stmt = $db->prepare("DELETE FROM votes WHERE article_id = :aid AND voter_ip = :ip");
+    $stmt->bindValue(':aid', $article_id, SQLITE3_INTEGER);
+    $stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+    $stmt->execute();
+
+    $db->exec("UPDATE articles SET votes = votes - 1 WHERE id = $article_id");
+
+    $stmt = $db->prepare("SELECT votes FROM articles WHERE id = :id");
+    $stmt->bindValue(':id', $article_id, SQLITE3_INTEGER);
+    $row = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+
+    echo json_encode(['success' => true, 'voted' => false, 'votes' => $row['votes']]);
     exit;
 }
 
@@ -47,4 +59,4 @@ $stmt = $db->prepare("SELECT votes FROM articles WHERE id = :id");
 $stmt->bindValue(':id', $article_id, SQLITE3_INTEGER);
 $row = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
-echo json_encode(['success' => true, 'votes' => $row['votes']]);
+echo json_encode(['success' => true, 'voted' => true, 'votes' => $row['votes']]);

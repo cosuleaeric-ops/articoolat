@@ -22,7 +22,7 @@ tailwind.config = {
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     @font-face {
         font-family: 'Bristol';
@@ -32,13 +32,13 @@ tailwind.config = {
         font-style: normal;
         font-display: swap;
     }
-    body { font-family: 'Inter', sans-serif; }
+    body { font-family: 'Nunito', sans-serif; }
     .font-bristol { font-family: 'Bristol', 'DM Serif Display', serif; letter-spacing: -0.03em; }
-    .vote-btn { transition: all 0.2s ease; }
-    .vote-btn:hover { transform: scale(1.15); }
+    .vote-btn { transition: all 0.2s ease; color: <?= e($settings['color_text_muted']) ?>; }
+    .vote-btn:hover { transform: scale(1.15); color: <?= e($settings['color_accent']) ?>; }
     .vote-btn.voted { color: <?= e($settings['color_accent']) ?>; }
     .card-hover { transition: all 0.15s ease; }
-    .card-hover:hover { background: <?= e($settings['color_surface']) ?>; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
 </style>
 <?php if (!empty($settings['ga_script'])): ?>
 <?= $settings['ga_script'] ?>

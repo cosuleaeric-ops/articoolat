@@ -66,17 +66,25 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
     <!-- Top Bar (floating) -->
     <div class="sticky top-0 z-50 pt-3 px-4">
-        <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-full px-5 py-4 flex items-center justify-between">
-            <a href="/" class="font-bristol text-xl uppercase tracking-tight hover:text-accent transition-colors">#ARTICOOLAT</a>
-            <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity">
-                + Articol nou
-            </a>
+        <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
+            <a href="/" class="text-xl font-bold tracking-tight hover:text-accent transition-colors">#articoolat</a>
+            <div class="flex items-center gap-2">
+                <?php if ($is_admin): ?>
+                <button onclick="document.getElementById('editPanel').classList.toggle('translate-x-full')"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-accent hover:bg-muted/10 transition-colors" title="Editează">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <?php endif; ?>
+                <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
+                    + Articol nou
+                </a>
+            </div>
         </nav>
     </div>
 
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
-        <h2 class="font-bold leading-tight tracking-tight" style="font-size: <?= e($settings['heading_size'] ?? '36') ?>px"><?= e($settings['site_subtitle']) ?></h2>
+        <h2 id="liveHeading" class="font-bold leading-tight tracking-tight" style="font-size: <?= e($settings['heading_size'] ?? '36') ?>px"><?= e($settings['site_subtitle']) ?></h2>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-6 border-b border-muted/20">
@@ -109,8 +117,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             <!-- Vote button -->
             <div class="flex flex-col items-center w-10 flex-shrink-0">
                 <button onclick="vote(<?= $article['id'] ?>, this)"
-                        class="vote-btn text-xl <?= isset($voted_ids[$article['id']]) ? 'voted' : 'text-muted hover:text-accent' ?>"
-                        <?= isset($voted_ids[$article['id']]) ? 'disabled' : '' ?>>
+                        class="vote-btn text-xl <?= isset($voted_ids[$article['id']]) ? 'voted' : '' ?>">
                     ♥
                 </button>
                 <span class="text-sm font-semibold mt-0.5 vote-count"><?= $article['votes'] ?></span>
@@ -143,33 +150,30 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     </main>
 
     <?php if ($is_admin): ?>
-    <!-- Admin Edit Button -->
-    <button onclick="document.getElementById('editPanel').classList.toggle('translate-x-full')"
-            class="fixed bottom-4 right-4 z-50 bg-txt text-bg px-4 py-2 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition-opacity">
-        Editează
-    </button>
-
     <!-- Edit Panel -->
     <div id="editPanel" class="fixed top-0 right-0 z-50 h-full w-80 bg-surface shadow-2xl transform translate-x-full transition-transform duration-300 overflow-y-auto">
         <div class="p-5">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="font-bold text-lg">Editează</h3>
+                <h3 class="font-bold text-lg">Editează live</h3>
                 <button onclick="document.getElementById('editPanel').classList.add('translate-x-full')" class="text-muted hover:text-txt text-xl">&times;</button>
             </div>
             <form id="editForm" class="space-y-4">
                 <div>
                     <label class="block text-xs text-muted mb-1">Titlu site</label>
                     <input type="text" name="site_title" value="<?= e($settings['site_title']) ?>"
+                           oninput="document.title=this.value"
                            class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
                 </div>
                 <div>
                     <label class="block text-xs text-muted mb-1">Heading principal</label>
                     <textarea name="site_subtitle" rows="2"
+                              oninput="document.getElementById('liveHeading').textContent=this.value"
                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent resize-none"><?= e($settings['site_subtitle']) ?></textarea>
                 </div>
                 <div>
                     <label class="block text-xs text-muted mb-1">Footer</label>
                     <input type="text" name="site_footer" value="<?= e($settings['site_footer']) ?>"
+                           oninput="document.getElementById('liveFooter').textContent=this.value"
                            class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
                 </div>
                 <hr class="border-muted/20">
@@ -182,14 +186,21 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                     'color_text' => 'Text',
                     'color_text_muted' => 'Text secundar',
                 ];
+                $color_css_map = [
+                    'color_bg' => '--live-bg',
+                    'color_surface' => '--live-surface',
+                    'color_accent' => '--live-accent',
+                    'color_text' => '--live-text',
+                    'color_text_muted' => '--live-muted',
+                ];
                 foreach ($color_fields as $key => $label):
                 ?>
                 <div class="flex items-center gap-2">
                     <input type="color" value="<?= e($settings[$key]) ?>" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent"
-                           oninput="this.nextElementSibling.value=this.value">
+                           oninput="this.nextElementSibling.value=this.value; liveColor('<?= $key ?>', this.value)">
                     <input type="text" name="<?= $key ?>" value="<?= e($settings[$key]) ?>" maxlength="7"
                            class="w-20 bg-bg border border-muted/20 rounded px-2 py-1 text-xs font-mono focus:outline-none focus:border-accent"
-                           oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))this.previousElementSibling.value=this.value">
+                           oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value)){this.previousElementSibling.value=this.value; liveColor('<?= $key ?>', this.value)}">
                     <span class="text-xs text-muted"><?= $label ?></span>
                 </div>
                 <?php endforeach; ?>
@@ -198,9 +209,10 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                 <div>
                     <label class="block text-xs text-muted mb-1">Dimensiune (px)</label>
                     <input type="number" name="heading_size" value="<?= e($settings['heading_size'] ?? '36') ?>" min="20" max="60"
+                           oninput="document.getElementById('liveHeading').style.fontSize=this.value+'px'"
                            class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
                 </div>
-                <button type="submit" class="w-full bg-accent text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+                <button type="submit" id="saveBtn" class="w-full bg-accent text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
                     Salvează
                 </button>
             </form>
@@ -210,13 +222,11 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
     <!-- Footer -->
     <footer class="max-w-[36rem] mx-auto px-4 py-8 border-t border-muted/20">
-        <p class="text-center text-muted text-sm"><?= e($settings['site_footer']) ?></p>
+        <p id="liveFooter" class="text-center text-muted text-sm"><?= e($settings['site_footer']) ?></p>
     </footer>
 
     <script>
     async function vote(articleId, btn) {
-        if (btn.classList.contains('voted')) return;
-
         try {
             const res = await fetch('/api/vote.php', {
                 method: 'POST',
@@ -226,26 +236,65 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             const data = await res.json();
 
             if (data.success) {
-                btn.classList.add('voted');
-                btn.disabled = true;
+                if (data.voted) {
+                    btn.classList.add('voted');
+                } else {
+                    btn.classList.remove('voted');
+                }
                 btn.nextElementSibling.textContent = data.votes;
             }
         } catch (err) {
             console.error('Vote failed:', err);
         }
     }
+    const colorMap = {
+        color_bg: 'bg', color_surface: 'surface',
+        color_accent: 'accent', color_text: 'txt',
+        color_text_muted: 'muted'
+    };
+    function liveColor(key, val) {
+        const twName = colorMap[key];
+        if (!twName) return;
+        const style = document.getElementById('liveStyles') || (() => {
+            const s = document.createElement('style');
+            s.id = 'liveStyles';
+            document.head.appendChild(s);
+            return s;
+        })();
+        if (!liveColor._colors) liveColor._colors = {};
+        liveColor._colors[twName] = val;
+        let css = '';
+        for (const [name, color] of Object.entries(liveColor._colors)) {
+            if (name === 'bg') css += `.bg-bg { background-color: ${color} !important; }\n`;
+            else if (name === 'surface') css += `.bg-surface, .bg-surface\\/95 { background-color: ${color} !important; }\n`;
+            else if (name === 'accent') css += `.text-accent, .border-accent { color: ${color} !important; } .bg-accent { background-color: ${color} !important; } .vote-btn.voted, .vote-btn:hover { color: ${color} !important; }\n`;
+            else if (name === 'txt') css += `.text-txt { color: ${color} !important; } .bg-txt { background-color: ${color} !important; }\n`;
+            else if (name === 'muted') css += `.text-muted { color: ${color} !important; } .vote-btn { color: ${color} !important; } .vote-btn.voted, .vote-btn:hover { color: ${liveColor._colors['accent'] || ''} !important; }\n`;
+        }
+        style.textContent = css;
+    }
+
     document.getElementById('editForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const btn = document.getElementById('saveBtn');
         const form = new FormData(e.target);
         const body = Object.fromEntries(form.entries());
+        btn.textContent = 'Se salvează...';
+        btn.disabled = true;
         const res = await fetch('/api/update-appearance.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
         const data = await res.json();
-        if (data.success) location.reload();
-        else alert(data.error || 'Eroare');
+        if (data.success) {
+            btn.textContent = 'Salvat!';
+            setTimeout(() => { btn.textContent = 'Salvează'; btn.disabled = false; }, 1500);
+        } else {
+            alert(data.error || 'Eroare');
+            btn.textContent = 'Salvează';
+            btn.disabled = false;
+        }
     });
     </script>
 </body>
