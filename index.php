@@ -58,8 +58,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <?php if ($is_admin): ?>
     <!-- Admin Top Bar -->
     <div class="bg-txt text-bg text-xs py-1.5">
-        <div class="max-w-[36rem] mx-auto px-4 flex items-center justify-between">
-            <span>Admin</span>
+        <div class="max-w-[36rem] mx-auto px-4">
             <a href="/admin/" class="hover:underline">Panou admin →</a>
         </div>
     </div>
@@ -77,7 +76,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
-        <h2 class="text-[36px] font-bold leading-tight tracking-tight">Internetul e plin de articole bune. Problema e că nu le găsești.</h2>
+        <h2 class="font-bold leading-tight tracking-tight" style="font-size: <?= e($settings['heading_size'] ?? '36') ?>px"><?= e($settings['site_subtitle']) ?></h2>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-6 border-b border-muted/20">
@@ -124,10 +123,10 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                     <?= e($article['title']) ?>
                 </a>
                 <div class="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-muted">
-                    <span><?= e($article['domain']) ?></span>
+                    <span class="bg-muted/10 px-2 py-0.5 rounded"><?= e($article['domain']) ?></span>
                     <?php if ($article['reading_time']): ?>
                     <span>·</span>
-                    <span><?= $article['reading_time'] ?> min</span>
+                    <span class="inline-flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><?= $article['reading_time'] ?> min</span>
                     <?php endif; ?>
                     <span>·</span>
                     <span><?= e($article['submitted_by']) ?></span>
@@ -144,12 +143,66 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     </main>
 
     <?php if ($is_admin): ?>
-    <!-- Admin Color Picker -->
-    <div class="fixed bottom-4 right-4 z-50 bg-surface rounded-xl shadow-lg p-3 flex items-center gap-2">
-        <label class="text-xs text-muted">Accent:</label>
-        <input type="text" id="colorHex" value="<?= e($settings['color_accent']) ?>" maxlength="7"
-               class="w-20 text-xs font-mono bg-bg border border-muted/20 rounded px-2 py-1 text-txt focus:outline-none focus:border-accent">
-        <button onclick="saveColor()" class="text-xs bg-accent text-white px-3 py-1 rounded hover:opacity-90">OK</button>
+    <!-- Admin Edit Button -->
+    <button onclick="document.getElementById('editPanel').classList.toggle('translate-x-full')"
+            class="fixed bottom-4 right-4 z-50 bg-txt text-bg px-4 py-2 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition-opacity">
+        Editează
+    </button>
+
+    <!-- Edit Panel -->
+    <div id="editPanel" class="fixed top-0 right-0 z-50 h-full w-80 bg-surface shadow-2xl transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-5">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-lg">Editează</h3>
+                <button onclick="document.getElementById('editPanel').classList.add('translate-x-full')" class="text-muted hover:text-txt text-xl">&times;</button>
+            </div>
+            <form id="editForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-muted mb-1">Titlu site</label>
+                    <input type="text" name="site_title" value="<?= e($settings['site_title']) ?>"
+                           class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label class="block text-xs text-muted mb-1">Heading principal</label>
+                    <textarea name="site_subtitle" rows="2"
+                              class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent resize-none"><?= e($settings['site_subtitle']) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs text-muted mb-1">Footer</label>
+                    <input type="text" name="site_footer" value="<?= e($settings['site_footer']) ?>"
+                           class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                </div>
+                <hr class="border-muted/20">
+                <h4 class="font-semibold text-sm">Culori</h4>
+                <?php
+                $color_fields = [
+                    'color_bg' => 'Background',
+                    'color_surface' => 'Carduri',
+                    'color_accent' => 'Accent',
+                    'color_text' => 'Text',
+                    'color_text_muted' => 'Text secundar',
+                ];
+                foreach ($color_fields as $key => $label):
+                ?>
+                <div class="flex items-center gap-2">
+                    <input type="color" name="<?= $key ?>" value="<?= e($settings[$key]) ?>" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
+                    <input type="text" value="<?= e($settings[$key]) ?>" readonly class="w-20 bg-bg border border-muted/20 rounded px-2 py-1 text-xs font-mono"
+                           onclick="this.previousElementSibling.click()">
+                    <span class="text-xs text-muted"><?= $label ?></span>
+                </div>
+                <?php endforeach; ?>
+                <hr class="border-muted/20">
+                <h4 class="font-semibold text-sm">Font heading</h4>
+                <div>
+                    <label class="block text-xs text-muted mb-1">Dimensiune (px)</label>
+                    <input type="number" name="heading_size" value="<?= e($settings['heading_size'] ?? '36') ?>" min="20" max="60"
+                           class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                </div>
+                <button type="submit" class="w-full bg-accent text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+                    Salvează
+                </button>
+            </form>
+        </div>
     </div>
     <?php endif; ?>
 
@@ -179,18 +232,19 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             console.error('Vote failed:', err);
         }
     }
-    async function saveColor() {
-        const hex = document.getElementById('colorHex').value.trim();
-        if (!/^#[0-9a-fA-F]{6}$/.test(hex)) { alert('Format: #ff5500'); return; }
-        const res = await fetch('/api/update-color.php', {
+    document.getElementById('editForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = new FormData(e.target);
+        const body = Object.fromEntries(form.entries());
+        const res = await fetch('/api/update-appearance.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ color: hex })
+            body: JSON.stringify(body)
         });
         const data = await res.json();
         if (data.success) location.reload();
-        else alert(data.error);
-    }
+        else alert(data.error || 'Eroare');
+    });
     </script>
 </body>
 </html>

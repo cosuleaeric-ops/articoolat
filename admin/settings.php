@@ -6,15 +6,9 @@ require_auth();
 $settings = load_settings();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) {
-    // Password change
-    if (!empty($_POST['new_password'])) {
-        $settings['admin_password_hash'] = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-    }
-
-    $settings['umami_site_id'] = trim($_POST['umami_site_id'] ?? '');
-    $settings['umami_script_url'] = trim($_POST['umami_script_url'] ?? '');
+    $settings['ga_measurement_id'] = trim($_POST['ga_measurement_id'] ?? '');
     $settings['kit_api_key'] = trim($_POST['kit_api_key'] ?? '');
-    $settings['tags'] = trim($_POST['tags'] ?? $settings['tags']);
+    $settings['kit_api_secret'] = trim($_POST['kit_api_secret'] ?? '');
 
     save_settings($settings);
     $saved = true;
@@ -38,44 +32,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) 
         <form method="POST" class="space-y-6">
             <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
 
-            <!-- Password -->
+            <!-- Google Analytics -->
             <div class="bg-surface rounded-xl p-6">
-                <h2 class="font-semibold mb-4">Parola admin</h2>
-                <input type="password" name="new_password" placeholder="Parola noua (lasa gol pt a nu schimba)"
+                <h2 class="font-semibold mb-4">Google Analytics</h2>
+                <label class="block text-sm text-muted mb-1">Measurement ID</label>
+                <input type="text" name="ga_measurement_id" value="<?= e($settings['ga_measurement_id'] ?? '') ?>" placeholder="G-XXXXXXXXXX"
                        class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
-            </div>
-
-            <!-- Analytics -->
-            <div class="bg-surface rounded-xl p-6">
-                <h2 class="font-semibold mb-4">Umami Analytics</h2>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-sm text-muted mb-1">Script URL</label>
-                        <input type="url" name="umami_script_url" value="<?= e($settings['umami_script_url']) ?>" placeholder="https://analytics.eu.umami.is/script.js"
-                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-muted mb-1">Site ID</label>
-                        <input type="text" name="umami_site_id" value="<?= e($settings['umami_site_id']) ?>" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
-                    </div>
-                </div>
             </div>
 
             <!-- Kit -->
             <div class="bg-surface rounded-xl p-6">
                 <h2 class="font-semibold mb-4">Kit (ConvertKit)</h2>
-                <label class="block text-sm text-muted mb-1">API Key</label>
-                <input type="text" name="kit_api_key" value="<?= e($settings['kit_api_key']) ?>" placeholder="API key"
-                       class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
-            </div>
-
-            <!-- Tags -->
-            <div class="bg-surface rounded-xl p-6">
-                <h2 class="font-semibold mb-4">Categorii / Tags</h2>
-                <label class="block text-sm text-muted mb-1">Separate prin virgula</label>
-                <input type="text" name="tags" value="<?= e($settings['tags']) ?>"
-                       class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm text-muted mb-1">API Key</label>
+                        <input type="text" name="kit_api_key" value="<?= e($settings['kit_api_key'] ?? '') ?>" placeholder="API key"
+                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-1">API Secret</label>
+                        <input type="text" name="kit_api_secret" value="<?= e($settings['kit_api_secret'] ?? '') ?>" placeholder="API secret"
+                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt placeholder-muted focus:outline-none focus:border-accent">
+                    </div>
+                </div>
             </div>
 
             <button type="submit" class="bg-accent text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">

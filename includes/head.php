@@ -40,6 +40,7 @@ tailwind.config = {
     .card-hover { transition: all 0.15s ease; }
     .card-hover:hover { background: <?= e($settings['color_surface']) ?>; }
 </style>
-<?php if ($settings['umami_site_id'] && $settings['umami_script_url']): ?>
-<script defer src="<?= e($settings['umami_script_url']) ?>" data-website-id="<?= e($settings['umami_site_id']) ?>"></script>
+<?php if (!empty($settings['ga_measurement_id'])): ?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($settings['ga_measurement_id']) ?>"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= e($settings['ga_measurement_id']) ?>');</script>
 <?php endif; ?>

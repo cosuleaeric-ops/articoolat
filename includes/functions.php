@@ -4,13 +4,14 @@ function load_settings(): array {
     $file = __DIR__ . '/../data/settings.json';
     $defaults = [
         'site_title' => 'Articoolat',
-        'site_subtitle' => 'Cele mai bune articole de pe internet, alese de tine.',
+        'site_subtitle' => 'Internetul e plin de articole bune. Problema e că nu le găsești.',
+        'heading_size' => '36',
         'site_footer' => 'Articoolat — Pentru cei care preferă să citească.',
         'admin_password_hash' => '',
         'auth_secret' => bin2hex(random_bytes(32)),
-        'umami_site_id' => '',
-        'umami_script_url' => '',
+        'ga_measurement_id' => '',
         'kit_api_key' => '',
+        'kit_api_secret' => '',
         'color_bg' => '#f3f4f6',
         'color_surface' => '#ffffff',
         'color_accent' => '#f97316',
