@@ -103,40 +103,41 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php endif; ?>
 
         <?php foreach ($articles as $i => $article): ?>
-        <article class="card-hover flex items-center gap-3 p-3 rounded-xl bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.08)] mb-3">
+        <?php
+        $thumb = $article['image_url'] ?: 'https://api.microlink.io/?url=' . urlencode($article['url']) . '&screenshot=true&meta=false&embed=screenshot.url';
+        ?>
+        <article class="card-hover flex items-center gap-4 p-4 rounded-xl bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.08)] mb-3">
             <!-- Vote button -->
-            <div class="flex flex-col items-center min-w-[36px]">
+            <div class="flex flex-col items-center w-10 flex-shrink-0">
                 <button onclick="vote(<?= $article['id'] ?>, this)"
                         class="vote-btn text-xl <?= isset($voted_ids[$article['id']]) ? 'voted' : 'text-muted hover:text-accent' ?>"
                         <?= isset($voted_ids[$article['id']]) ? 'disabled' : '' ?>>
                     ♥
                 </button>
-                <span class="text-sm font-semibold mt-1 vote-count"><?= $article['votes'] ?></span>
+                <span class="text-sm font-semibold mt-0.5 vote-count"><?= $article['votes'] ?></span>
+            </div>
+
+            <!-- Thumbnail -->
+            <div class="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-muted/10">
+                <img src="<?= e($thumb) ?>" alt="" loading="lazy"
+                     class="w-14 h-14 object-cover">
             </div>
 
             <!-- Content -->
             <div class="flex-1 min-w-0">
                 <a href="<?= e($article['url']) ?>" target="_blank" rel="noopener"
-                   class="text-txt font-medium hover:text-accent transition-colors leading-snug">
+                   class="text-txt font-medium hover:text-accent transition-colors leading-snug line-clamp-2">
                     <?= e($article['title']) ?>
                 </a>
-                <div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted">
-                    <span class="bg-surface px-2 py-0.5 rounded"><?= e($article['domain']) ?></span>
+                <div class="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-muted">
+                    <span><?= e($article['domain']) ?></span>
                     <?php if ($article['reading_time']): ?>
-                    <span><?= $article['reading_time'] ?> min citire</span>
+                    <span>·</span>
+                    <span><?= $article['reading_time'] ?> min</span>
                     <?php endif; ?>
                     <span>·</span>
                     <span><?= e($article['submitted_by']) ?></span>
                 </div>
-            </div>
-
-            <!-- Thumbnail -->
-            <?php
-            $thumb = $article['image_url'] ?: 'https://api.microlink.io/?url=' . urlencode($article['url']) . '&screenshot=true&meta=false&embed=screenshot.url';
-            ?>
-            <div class="flex-shrink-0">
-                <img src="<?= e($thumb) ?>" alt="" loading="lazy"
-                     class="w-16 h-16 object-cover rounded-lg bg-surface">
             </div>
         </article>
         <?php endforeach; ?>
