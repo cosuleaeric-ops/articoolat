@@ -69,8 +69,8 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     </div>
 
     <!-- Header -->
-    <header class="max-w-[36rem] mx-auto px-4 pt-6 pb-4">
-        <p class="text-muted text-sm"><?= e($settings['site_subtitle']) ?></p>
+    <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
+        <h2 class="text-[36px] font-bold leading-tight tracking-tight">Internetul e plin de articole bune. Problema e că nu le găsești.</h2>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-6 border-b border-muted/20">
