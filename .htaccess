@@ -1,0 +1,12 @@
+Options -Indexes
+RewriteEngine On
+
+# Block access to data directory
+RewriteRule ^data/ - [F,L]
+
+# Block access to includes directory
+RewriteRule ^includes/ - [F,L]
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
