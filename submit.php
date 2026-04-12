@@ -10,13 +10,13 @@ $tags = get_tags();
 </head>
 <body class="bg-bg text-txt min-h-screen">
 
-    <header class="max-w-2xl mx-auto px-4 pt-8 pb-6">
+    <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-6">
         <a href="/" class="text-muted hover:text-txt text-sm transition-colors">← Inapoi</a>
         <h1 class="text-2xl font-bold mt-4">Adauga un articol</h1>
         <p class="text-muted text-sm mt-1">Lipeste un link si noi completam restul.</p>
     </header>
 
-    <main class="max-w-2xl mx-auto px-4 pb-12">
+    <main class="max-w-[36rem] mx-auto px-4 pb-12">
         <form id="submitForm" class="space-y-5">
 
             <!-- URL -->
