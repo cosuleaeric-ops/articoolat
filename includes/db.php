@@ -29,5 +29,18 @@ function get_db(): SQLite3 {
         UNIQUE(article_id, voter_ip)
     )");
 
+    $db->exec("CREATE TABLE IF NOT EXISTS vote_meta (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vote_id INTEGER NOT NULL,
+        fingerprint TEXT NOT NULL,
+        user_agent TEXT,
+        accept_language TEXT,
+        screen_resolution TEXT,
+        timezone TEXT,
+        created_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (vote_id) REFERENCES votes(id) ON DELETE CASCADE
+    )");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_vote_meta_fingerprint ON vote_meta(fingerprint)");
+
     return $db;
 }

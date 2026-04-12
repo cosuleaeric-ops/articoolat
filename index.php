@@ -220,12 +220,30 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     </footer>
 
     <script>
+    async function getFingerprint() {
+        const raw = [
+            navigator.userAgent,
+            navigator.language,
+            screen.width + 'x' + screen.height,
+            Intl.DateTimeFormat().resolvedOptions().timeZone,
+            new Date().getTimezoneOffset()
+        ].join('|');
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     async function vote(articleId, btn) {
         try {
+            const fingerprint = await getFingerprint();
             const res = await fetch('/api/vote.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ article_id: articleId })
+                body: JSON.stringify({
+                    article_id: articleId,
+                    fingerprint: fingerprint,
+                    screen_resolution: screen.width + 'x' + screen.height,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                })
             });
             const data = await res.json();
 

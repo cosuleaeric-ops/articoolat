@@ -105,6 +105,62 @@ $top_article = $db->querySingle("SELECT title FROM articles ORDER BY votes DESC 
                 <p class="text-sm font-medium mt-1 truncate"><?= $top_article ? e($top_article) : '—' ?></p>
             </div>
         </div>
+
+        <!-- Abuse Detection -->
+        <h2 class="text-xl font-bold mb-4">Detectie abuse voturi</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <?php
+            // Top fingerprints by vote count
+            $top_fp = $db->query("SELECT fingerprint, COUNT(*) as vote_count, COUNT(DISTINCT v.voter_ip) as ip_count, MIN(vm.created_at) as first_vote, MAX(vm.created_at) as last_vote FROM vote_meta vm JOIN votes v ON vm.vote_id = v.id GROUP BY fingerprint ORDER BY vote_count DESC LIMIT 10");
+            ?>
+            <div class="bg-surface rounded-xl p-5">
+                <h3 class="font-semibold text-sm text-muted uppercase tracking-wide mb-3">Top fingerprints (dupa nr. voturi)</h3>
+                <div class="space-y-2">
+                    <?php
+                    $has_rows = false;
+                    while ($fp = $top_fp->fetchArray(SQLITE3_ASSOC)):
+                        $has_rows = true;
+                    ?>
+                    <div class="flex items-center justify-between text-sm py-1.5 border-b border-muted/10">
+                        <div>
+                            <code class="text-xs bg-muted/10 px-1.5 py-0.5 rounded"><?= e(substr($fp['fingerprint'], 0, 12)) ?>...</code>
+                            <span class="text-muted text-xs ml-1"><?= $fp['ip_count'] ?> IP-uri</span>
+                        </div>
+                        <span class="font-semibold"><?= $fp['vote_count'] ?> voturi</span>
+                    </div>
+                    <?php endwhile; ?>
+                    <?php if (!$has_rows): ?>
+                    <p class="text-muted text-sm">Nicio data inca.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <?php
+            // Suspicious: fingerprints with multiple IPs (possible VPN abuse)
+            $suspect = $db->query("SELECT fingerprint, COUNT(DISTINCT v.voter_ip) as ip_count, COUNT(*) as vote_count, GROUP_CONCAT(DISTINCT v.voter_ip) as ips FROM vote_meta vm JOIN votes v ON vm.vote_id = v.id GROUP BY fingerprint HAVING ip_count > 1 ORDER BY ip_count DESC LIMIT 10");
+            ?>
+            <div class="bg-surface rounded-xl p-5">
+                <h3 class="font-semibold text-sm text-muted uppercase tracking-wide mb-3">Suspect: fingerprint pe mai multe IP-uri</h3>
+                <div class="space-y-2">
+                    <?php
+                    $has_suspect = false;
+                    while ($s = $suspect->fetchArray(SQLITE3_ASSOC)):
+                        $has_suspect = true;
+                    ?>
+                    <div class="text-sm py-1.5 border-b border-muted/10">
+                        <div class="flex items-center justify-between">
+                            <code class="text-xs bg-muted/10 px-1.5 py-0.5 rounded"><?= e(substr($s['fingerprint'], 0, 12)) ?>...</code>
+                            <span class="text-orange-500 font-semibold"><?= $s['ip_count'] ?> IP-uri</span>
+                        </div>
+                        <p class="text-xs text-muted mt-1"><?= e($s['ips']) ?></p>
+                    </div>
+                    <?php endwhile; ?>
+                    <?php if (!$has_suspect): ?>
+                    <p class="text-muted text-sm">Niciun comportament suspect.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 </html>
