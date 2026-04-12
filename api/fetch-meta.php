@@ -62,6 +62,16 @@ if (!$description && preg_match('/<meta[^>]+name=["\']description["\'][^>]+conte
 // og:image
 if (preg_match('/<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)/i', $html, $m)) {
     $image = $m[1];
+    // Verify image is accessible
+    $headers = @get_headers($image, true);
+    if (!$headers || strpos($headers[0], '200') === false) {
+        $image = '';
+    }
+}
+
+// Fallback: screenshot via microlink
+if (!$image) {
+    $image = 'https://api.microlink.io/?url=' . urlencode($url) . '&screenshot=true&meta=false&embed=screenshot.url';
 }
 
 // Estimate reading time: strip tags, count words, divide by 238 WPM

@@ -53,17 +53,6 @@ $tags = get_tags();
                 <img id="previewImg" src="" alt="" class="w-full max-h-48 object-cover rounded-lg bg-surface">
             </div>
 
-            <!-- Tag -->
-            <div>
-                <label class="block text-sm font-medium mb-1.5">Categorie</label>
-                <select name="tag"
-                        class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt focus:outline-none focus:border-accent transition-colors">
-                    <?php foreach ($tags as $tag): ?>
-                    <option value="<?= e($tag) ?>"><?= e($tag) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
             <!-- Nickname -->
             <div>
                 <label class="block text-sm font-medium mb-1.5">Numele tau</label>

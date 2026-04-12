@@ -7,7 +7,7 @@ $is_admin = is_authenticated();
 $db = get_db();
 $settings = load_settings();
 
-$tab = $_GET['tab'] ?? 'hot';
+$tab = $_GET['tab'] ?? 'new';
 $top_period = $_GET['period'] ?? 'all';
 
 // Build query based on tab
@@ -16,15 +16,7 @@ switch ($tab) {
         $sql = "SELECT * FROM articles ORDER BY created_at DESC LIMIT 50";
         break;
     case 'top':
-        $where = '';
-        if ($top_period === 'today') {
-            $where = "WHERE created_at >= datetime('now', '-1 day')";
-        } elseif ($top_period === 'week') {
-            $where = "WHERE created_at >= datetime('now', '-7 days')";
-        } elseif ($top_period === 'month') {
-            $where = "WHERE created_at >= datetime('now', '-30 days')";
-        }
-        $sql = "SELECT * FROM articles $where ORDER BY votes DESC LIMIT 50";
+        $sql = "SELECT * FROM articles ORDER BY votes DESC LIMIT 50";
         break;
     default: // hot
         $tab = 'hot';
@@ -63,59 +55,39 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body class="bg-bg text-txt min-h-screen">
 
-    <?php if ($is_admin): ?>
-    <div class="bg-surface border-b border-muted/20 text-sm">
-        <div class="max-w-3xl mx-auto px-4 py-2 flex items-center justify-between">
-            <span class="text-muted">Admin</span>
-            <a href="/admin/" class="text-accent hover:underline">Panou admin →</a>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Header -->
-    <header class="max-w-3xl mx-auto px-4 pt-8 pb-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight">
-                    <a href="/" class="hover:text-accent transition-colors"><?= e($settings['site_title']) ?></a>
-                </h1>
-                <p class="text-muted text-sm mt-1"><?= e($settings['site_subtitle']) ?></p>
-            </div>
-            <a href="/submit.php" class="bg-accent text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+    <!-- Top Bar (floating) -->
+    <div class="sticky top-0 z-50 pt-3 px-4">
+        <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-full px-5 py-4 flex items-center justify-between">
+            <a href="/" class="font-bristol text-xl uppercase tracking-tight hover:text-accent transition-colors">#ARTICOOLAT</a>
+            <?php if ($is_admin): ?>
+            <a href="/admin/" class="text-muted text-xs hover:text-accent transition-colors">Admin →</a>
+            <?php endif; ?>
+            <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity">
                 + Adauga articol
             </a>
-        </div>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="max-w-[36rem] mx-auto px-4 pt-6 pb-4">
+        <p class="text-muted text-sm"><?= e($settings['site_subtitle']) ?></p>
 
         <!-- Tabs -->
-        <nav class="flex gap-1 mt-6 border-b border-muted/20">
-            <a href="/?tab=hot"
-               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors <?= $tab === 'hot' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
-                🔥 Hot
-            </a>
+        <nav class="flex gap-2 mt-6 border-b border-muted/20">
             <a href="/?tab=new"
-               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors <?= $tab === 'new' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
-                ✨ Noi
+               class="px-5 py-3 text-base font-semibold border-b-2 transition-colors <?= $tab === 'new' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
+                <svg class="inline w-4 h-4 -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/></svg> Noi
             </a>
             <a href="/?tab=top"
-               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors <?= $tab === 'top' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
-                📊 Top
+               class="px-5 py-3 text-base font-semibold border-b-2 transition-colors <?= $tab === 'top' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
+                <svg class="inline w-4 h-4 -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> Top
             </a>
         </nav>
 
-        <?php if ($tab === 'top'): ?>
-        <div class="flex gap-2 mt-3">
-            <?php foreach (['today' => 'Azi', 'week' => 'Saptamana', 'month' => 'Luna', 'all' => 'Toate'] as $key => $label): ?>
-            <a href="/?tab=top&period=<?= $key ?>"
-               class="px-3 py-1 text-xs rounded-full transition-colors <?= $top_period === $key ? 'bg-accent text-white' : 'bg-surface text-muted hover:text-txt' ?>">
-                <?= $label ?>
-            </a>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
     </header>
 
     <!-- Articles -->
-    <main class="max-w-3xl mx-auto px-4 pb-12">
+    <main class="max-w-[36rem] mx-auto px-4 pb-12">
         <?php if (empty($articles)): ?>
         <div class="text-center py-16">
             <p class="text-muted text-lg">Niciun articol inca.</p>
@@ -124,7 +96,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php endif; ?>
 
         <?php foreach ($articles as $i => $article): ?>
-        <article class="card-hover flex items-start gap-4 py-4 px-3 rounded-xl <?= $i > 0 ? 'border-t border-muted/20' : '' ?>">
+        <article class="card-hover flex items-start gap-4 p-4 rounded-xl bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.08)] mb-3">
             <!-- Vote button -->
             <div class="flex flex-col items-center pt-1 min-w-[40px]">
                 <button onclick="vote(<?= $article['id'] ?>, this)"
@@ -143,14 +115,11 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                 </a>
                 <div class="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-muted">
                     <span class="bg-surface px-2 py-0.5 rounded"><?= e($article['domain']) ?></span>
-                    <span class="bg-surface px-2 py-0.5 rounded"><?= e($article['tag']) ?></span>
                     <?php if ($article['reading_time']): ?>
                     <span><?= $article['reading_time'] ?> min citire</span>
                     <?php endif; ?>
                     <span>·</span>
                     <span><?= e($article['submitted_by']) ?></span>
-                    <span>·</span>
-                    <span><?= time_ago($article['created_at']) ?></span>
                 </div>
                 <?php if ($article['description']): ?>
                 <p class="text-muted text-sm mt-2 leading-relaxed"><?= e(truncate($article['description'], 200)) ?></p>
@@ -158,18 +127,29 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             </div>
 
             <!-- Thumbnail -->
-            <?php if ($article['image_url']): ?>
+            <?php
+            $thumb = $article['image_url'] ?: 'https://api.microlink.io/?url=' . urlencode($article['url']) . '&screenshot=true&meta=false&embed=screenshot.url';
+            ?>
             <div class="hidden sm:block flex-shrink-0">
-                <img src="<?= e($article['image_url']) ?>" alt="" loading="lazy"
+                <img src="<?= e($thumb) ?>" alt="" loading="lazy"
                      class="w-20 h-20 object-cover rounded-lg bg-surface">
             </div>
-            <?php endif; ?>
         </article>
         <?php endforeach; ?>
     </main>
 
+    <?php if ($is_admin): ?>
+    <!-- Admin Color Picker -->
+    <div class="fixed bottom-4 right-4 z-50 bg-surface rounded-xl shadow-lg p-3 flex items-center gap-2">
+        <label class="text-xs text-muted">Accent:</label>
+        <input type="text" id="colorHex" value="<?= e($settings['color_accent']) ?>" maxlength="7"
+               class="w-20 text-xs font-mono bg-bg border border-muted/20 rounded px-2 py-1 text-txt focus:outline-none focus:border-accent">
+        <button onclick="saveColor()" class="text-xs bg-accent text-white px-3 py-1 rounded hover:opacity-90">OK</button>
+    </div>
+    <?php endif; ?>
+
     <!-- Footer -->
-    <footer class="max-w-3xl mx-auto px-4 py-8 border-t border-muted/20">
+    <footer class="max-w-[36rem] mx-auto px-4 py-8 border-t border-muted/20">
         <p class="text-center text-muted text-sm"><?= e($settings['site_footer']) ?></p>
     </footer>
 
@@ -193,6 +173,18 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         } catch (err) {
             console.error('Vote failed:', err);
         }
+    }
+    async function saveColor() {
+        const hex = document.getElementById('colorHex').value.trim();
+        if (!/^#[0-9a-fA-F]{6}$/.test(hex)) { alert('Format: #ff5500'); return; }
+        const res = await fetch('/api/update-color.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ color: hex })
+        });
+        const data = await res.json();
+        if (data.success) location.reload();
+        else alert(data.error);
     }
     </script>
 </body>

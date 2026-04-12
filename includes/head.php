@@ -22,9 +22,18 @@ tailwind.config = {
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+    @font-face {
+        font-family: 'Bristol';
+        src: url('/assets/fonts/bristol.woff2') format('woff2'),
+             url('/assets/fonts/bristol.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
     body { font-family: 'Inter', sans-serif; }
+    .font-bristol { font-family: 'Bristol', 'DM Serif Display', serif; letter-spacing: -0.03em; }
     .vote-btn { transition: all 0.2s ease; }
     .vote-btn:hover { transform: scale(1.15); }
     .vote-btn.voted { color: <?= e($settings['color_accent']) ?>; }

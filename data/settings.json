@@ -1,0 +1,16 @@
+{
+    "site_title": "Articoolat",
+    "site_subtitle": "Cele mai bune articole de pe internet, alese de tine.",
+    "site_footer": "Articoolat — Pentru cei care preferă să citească.",
+    "admin_password_hash": "",
+    "auth_secret": "05541a9aac9e91ace7e20a8704d593bdcdca8d02a76ed11760cc8905576f3da7",
+    "umami_site_id": "",
+    "umami_script_url": "",
+    "kit_api_key": "",
+    "color_bg": "#f3f4f6",
+    "color_surface": "#ffffff",
+    "color_accent": "#f97316",
+    "color_text": "#1c1917",
+    "color_text_muted": "#78716c",
+    "tags": "Tehnologie,Startup,Cultură,Știință,Afaceri,Design,Programare,România,Educație,Opinie"
+}

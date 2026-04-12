@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "articoolat",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-S", "localhost:8080", "-t", "/Users/ericcosulea/Documents/Proiecte/articoolat"],
+      "port": 8080
+    }
+  ]
+}
