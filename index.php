@@ -117,12 +117,6 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                 <span class="text-sm font-semibold mt-0.5 vote-count"><?= $article['votes'] ?></span>
             </div>
 
-            <!-- Thumbnail -->
-            <div class="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-muted/10">
-                <img src="<?= e($thumb) ?>" alt="" loading="lazy"
-                     class="w-14 h-14 object-cover">
-            </div>
-
             <!-- Content -->
             <div class="flex-1 min-w-0">
                 <a href="<?= e($article['url']) ?>" target="_blank" rel="noopener"
@@ -138,6 +132,12 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                     <span>·</span>
                     <span><?= e($article['submitted_by']) ?></span>
                 </div>
+            </div>
+
+            <!-- Thumbnail -->
+            <div class="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-muted/10">
+                <img src="<?= e($thumb) ?>" alt="" loading="lazy"
+                     class="w-14 h-14 object-cover">
             </div>
         </article>
         <?php endforeach; ?>
