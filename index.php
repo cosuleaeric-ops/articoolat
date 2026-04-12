@@ -55,15 +55,22 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body class="bg-bg text-txt min-h-screen">
 
+    <?php if ($is_admin): ?>
+    <!-- Admin Top Bar -->
+    <div class="bg-txt text-bg text-xs py-1.5">
+        <div class="max-w-[36rem] mx-auto px-4 flex items-center justify-between">
+            <span>Admin</span>
+            <a href="/admin/" class="hover:underline">Panou admin →</a>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Top Bar (floating) -->
     <div class="sticky top-0 z-50 pt-3 px-4">
         <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-full px-5 py-4 flex items-center justify-between">
             <a href="/" class="font-bristol text-xl uppercase tracking-tight hover:text-accent transition-colors">#ARTICOOLAT</a>
-            <?php if ($is_admin): ?>
-            <a href="/admin/" class="text-muted text-xs hover:text-accent transition-colors">Admin →</a>
-            <?php endif; ?>
             <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity">
-                + Adauga articol
+                + Articol nou
             </a>
         </nav>
     </div>
