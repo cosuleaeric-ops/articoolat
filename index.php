@@ -128,9 +128,6 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                     <span>·</span>
                     <span><?= e($article['submitted_by']) ?></span>
                 </div>
-                <?php if ($article['description']): ?>
-                <p class="text-muted text-sm mt-2 leading-relaxed"><?= e(truncate($article['description'], 200)) ?></p>
-                <?php endif; ?>
             </div>
 
             <!-- Thumbnail -->
