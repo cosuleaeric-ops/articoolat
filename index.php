@@ -134,7 +134,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             <?php
             $thumb = $article['image_url'] ?: 'https://api.microlink.io/?url=' . urlencode($article['url']) . '&screenshot=true&meta=false&embed=screenshot.url';
             ?>
-            <div class="hidden sm:block flex-shrink-0">
+            <div class="flex-shrink-0">
                 <img src="<?= e($thumb) ?>" alt="" loading="lazy"
                      class="w-20 h-20 object-cover rounded-lg bg-surface">
             </div>
