@@ -29,5 +29,8 @@ function get_db(): SQLite3 {
         UNIQUE(article_id, voter_ip)
     )");
 
+    // One-time cleanup: clear broken Microlink URLs from old articles
+    $db->exec("UPDATE articles SET image_url = NULL WHERE image_url LIKE '%api.microlink.io%'");
+
     return $db;
 }

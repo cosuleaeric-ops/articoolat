@@ -105,7 +105,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
         <?php foreach ($articles as $i => $article): ?>
         <?php
-        $thumb = $article['image_url'] ?: 'https://api.microlink.io/?url=' . urlencode($article['url']) . '&screenshot=true&meta=false&embed=screenshot.url';
+        $thumb = $article['image_url'] ?: '';
         ?>
         <article class="card-hover flex items-center gap-4 p-4 rounded-xl bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.08)] mb-3">
             <!-- Vote button -->
@@ -136,8 +136,15 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
             <!-- Thumbnail -->
             <div class="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-muted/10">
+                <?php if ($thumb): ?>
                 <img src="<?= e($thumb) ?>" alt="" loading="lazy"
-                     class="w-14 h-14 object-cover">
+                     class="w-14 h-14 object-cover"
+                     onerror="this.parentElement.innerHTML='<div class=\'w-14 h-14 flex items-center justify-center bg-accent/10 text-accent font-bold text-lg\'><?= strtoupper(mb_substr($article['domain'], 0, 1)) ?></div>'">
+                <?php else: ?>
+                <div class="w-14 h-14 flex items-center justify-center bg-accent/10 text-accent font-bold text-lg">
+                    <?= strtoupper(mb_substr($article['domain'], 0, 1)) ?>
+                </div>
+                <?php endif; ?>
             </div>
         </article>
         <?php endforeach; ?>
