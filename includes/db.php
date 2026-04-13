@@ -29,8 +29,30 @@ function get_db(): SQLite3 {
         UNIQUE(article_id, voter_ip)
     )");
 
-    // One-time cleanup: clear broken Microlink URLs from old articles
-    $db->exec("UPDATE articles SET image_url = NULL WHERE image_url LIKE '%api.microlink.io%'");
+    // One-time migration: re-fetch og:image for articles missing an image
+    $flag = __DIR__ . '/../data/.migrated_images';
+    if (!file_exists($flag)) {
+        $missing = $db->query("SELECT id, url FROM articles WHERE image_url IS NULL OR image_url = '' OR image_url LIKE '%api.microlink.io%'");
+        $ctx = stream_context_create([
+            'http' => ['timeout' => 5, 'header' => "User-Agent: Mozilla/5.0 (compatible; Articoolat/1.0)\r\n", 'follow_location' => true, 'max_redirects' => 5],
+            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]
+        ]);
+        while ($row = $missing->fetchArray(SQLITE3_ASSOC)) {
+            $html = @file_get_contents($row['url'], false, $ctx);
+            if ($html && preg_match('/<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)/i', $html, $m)) {
+                $img = $m[1];
+                if (!preg_match('#^https?://#i', $img)) {
+                    $parsed = parse_url($row['url']);
+                    $img = $parsed['scheme'] . '://' . $parsed['host'] . '/' . ltrim($img, '/');
+                }
+                $stmt = $db->prepare("UPDATE articles SET image_url = :img WHERE id = :id");
+                $stmt->bindValue(':img', $img, SQLITE3_TEXT);
+                $stmt->bindValue(':id', $row['id'], SQLITE3_INTEGER);
+                $stmt->execute();
+            }
+        }
+        @file_put_contents($flag, date('Y-m-d H:i:s'));
+    }
 
     return $db;
 }
