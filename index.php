@@ -121,7 +121,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             <div class="flex-1 min-w-0">
                 <a href="<?= e($article['url']) ?>" target="_blank" rel="noopener"
                    class="text-txt font-medium hover:text-accent transition-colors leading-snug line-clamp-2">
-                    <?= e($article['title']) ?> <svg class="w-3 h-3 inline-block align-baseline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <?= e($article['title']) ?>
                 </a>
                 <div class="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-muted">
                     <span class="bg-muted/10 px-2 py-0.5 rounded"><?= e($article['domain']) ?></span>
