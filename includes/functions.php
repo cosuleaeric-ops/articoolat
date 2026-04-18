@@ -168,21 +168,37 @@ function fetch_article_text_via_reader(string $url): string {
 }
 
 /**
+ * Domenii unde HTML-ul direct e de obicei incomplet (SPA / JS heavy /
+ * Cloudflare challenge). Pentru ele mergem direct la Jina Reader.
+ */
+function is_js_heavy_domain(string $url): bool {
+    $host = strtolower(parse_url($url, PHP_URL_HOST) ?: '');
+    $host = preg_replace('/^www\./', '', $host);
+    $needles = ['medium.com', 'substack.com', 'x.com', 'twitter.com', 'threads.net', 'linkedin.com'];
+    foreach ($needles as $n) {
+        if ($host === $n || str_ends_with($host, '.' . $n)) return true;
+    }
+    return false;
+}
+
+/**
  * Calculează durata de citire în minute pentru un URL.
- * Încearcă fetch direct; dacă textul extras are sub 200 cuvinte (site blocat
- * sau SPA gol), încearcă prin Jina Reader. Fallback: 3 min.
+ * Domenii SPA cunoscute → direct Jina Reader. Restul → fetch direct, cu
+ * fallback la Jina dacă textul e prea scurt. Ia maximul ca să nu subestimăm.
+ * Fallback final: 3 min.
  */
 function compute_reading_time(string $url): int {
-    $html = fetch_article_html($url);
-    $text = extract_article_text($html ?: '');
-    $words = count_words($text);
+    $words = 0;
 
-    if ($words < 200) {
-        $reader_text = fetch_article_text_via_reader($url);
-        $reader_words = count_words($reader_text);
-        if ($reader_words > $words) {
-            $words = $reader_words;
-        }
+    if (!is_js_heavy_domain($url)) {
+        $html = fetch_article_html($url);
+        $words = count_words(extract_article_text($html ?: ''));
+    }
+
+    // Dacă fetch-ul direct n-a dat destul (sau e domeniu SPA), folosim Jina.
+    if ($words < 600) {
+        $reader_words = count_words(fetch_article_text_via_reader($url));
+        if ($reader_words > $words) $words = $reader_words;
     }
 
     if ($words < 50) return 3; // fallback onest
