@@ -50,6 +50,14 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
                 $url = $row['url'];
                 $old = $row['reading_time'];
 
+                // Debug: fetch text and show word counts
+                $is_js = is_js_heavy_domain($url);
+                $reader = fetch_article_text_via_reader($url);
+                $html_raw = !$is_js ? (fetch_article_html($url) ?: '') : '';
+                $wc_reader = $reader ? count_words($reader) : 0;
+                $wc_direct = $html_raw ? count_words(extract_article_text($html_raw)) : 0;
+                $declared = extract_declared_reading_time($reader ?: $html_raw);
+
                 $new = compute_reading_time($url);
                 $tag = $new === 3 ? '<span class="fail">FALLBACK</span>' : '<span class="ok">OK</span>';
                 if ($new === 3) $failed++;
@@ -60,8 +68,9 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
                 $stmt->execute();
                 $updated++;
 
-                $lines[] = sprintf('[%s] #%d  %s  ->  %d min  %s',
-                    $tag, $id, $old === null ? 'null' : $old.' min', $new, e($url));
+                $lines[] = sprintf('[%s] #%d  %s->%d min  [jina:%dw direct:%dw declared:%s]  %s',
+                    $tag, $id, $old === null ? 'null ' : $old.'min→', $new,
+                    $wc_reader, $wc_direct, $declared ?? 'none', e($url));
             }
         ?>
             <div class="bg-surface rounded-xl p-6 mb-4">
