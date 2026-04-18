@@ -232,9 +232,9 @@ function extract_declared_reading_time(string $text): ?int {
 /**
  * Calculează durata de citire în minute pentru un URL.
  * Strategie:
- *   1. Ia textul (direct, sau prin Jina Reader pentru domenii SPA).
- *   2. Dacă platforma declară „X min read" — îl folosește direct (cel mai precis).
- *   3. Altfel, numără cuvintele din conținutul extras.
+ *   1. Fetch text via Jina Reader (sau direct pentru site-uri simple).
+ *   2. Dacă avem ≥200 cuvinte — calculăm din word count (cel mai precis).
+ *   3. Dacă textul e scurt (paywall/blocat) — fallback la timpul declarat de site.
  * Fallback final: 3 min.
  */
 function compute_reading_time(string $url): int {
@@ -245,28 +245,25 @@ function compute_reading_time(string $url): int {
         $reader = fetch_article_text_via_reader($url);
     } else {
         $html = fetch_article_html($url) ?: '';
+        // Încearcă și Jina pentru extracție mai curată
+        $reader = fetch_article_text_via_reader($url);
     }
 
-    // 1. Prima sursă de adevăr: valoarea declarată de site.
+    // 1. Calculăm din word count dacă avem text suficient (≥200 cuvinte).
+    //    Declared time e nesigur — poate proveni din articole recomandate/sidebar.
+    $words_direct = $html ? count_words(extract_article_text($html)) : 0;
+    $words_reader = $reader ? count_words($reader) : 0;
+    $words = max($words_direct, $words_reader);
+
+    if ($words >= 200) {
+        return max(1, min(120, (int) round($words / 238)));
+    }
+
+    // 2. Text insuficient (articol paywall/blocat) — folosim timpul declarat de platformă.
     $declared = extract_declared_reading_time($reader ?: $html);
     if ($declared !== null) return $declared;
 
-    // 2. Altfel, încercăm și Jina dacă n-am făcut-o deja (poate conține „min read")
-    if (!$reader && !is_js_heavy_domain($url)) {
-        $reader = fetch_article_text_via_reader($url);
-        $declared = extract_declared_reading_time($reader);
-        if ($declared !== null) return $declared;
-    }
-
-    // 3. Fallback: word count — luăm minimul non-zero (e conservator;
-    //    max-ul tinde să umfle pentru că include și navbar/footer/recomandări).
-    $words_direct = $html ? count_words(extract_article_text($html)) : 0;
-    $words_reader = $reader ? count_words($reader) : 0;
-    $candidates = array_filter([$words_direct, $words_reader], fn($n) => $n >= 50);
-    $words = $candidates ? max($candidates) : 0;
-
-    if ($words < 50) return 3;
-    return max(1, min(120, (int) round($words / 238)));
+    return 3;
 }
 
 /**
