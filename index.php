@@ -70,7 +70,13 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <!-- Top Bar (floating) -->
     <div class="sticky top-0 z-50 pt-3 px-4">
         <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
-            <a href="/" class="text-xl font-bold tracking-tight hover:text-accent transition-colors">#articoolat</a>
+            <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <svg width="18" height="24" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4h32a2 2 0 0 1 2 2v42L20 38 2 48V6a2 2 0 0 1 2-2z" fill="<?= e($settings['color_accent']) ?>"/>
+                    <path d="M13 20h14M13 27h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xl font-bold tracking-tight">#articoolat</span>
+            </a>
             <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
                 + Articol nou
             </a>

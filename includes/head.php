@@ -5,6 +5,8 @@ $settings = load_settings();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e($settings['site_title']) ?></title>
 <meta name="description" content="<?= e($settings['site_subtitle']) ?>">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="shortcut icon" href="/assets/favicon.svg">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
