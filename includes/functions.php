@@ -253,45 +253,70 @@ function extract_declared_reading_time(string $text): ?int {
  * Fallback final: 3 min.
  */
 /**
- * Extrage ID-ul numeric dintr-un URL Substack (substack.com/@author/p-ID sau /home/post/p-ID).
- * Returnează null dacă nu e un URL Substack cu post ID.
+ * Extrage username și post ID dintr-un URL Substack.
+ * Returnează ['username' => '...', 'post_id' => '...'] sau null.
  */
-function extract_substack_post_id(string $url): ?string {
-    if (preg_match('#substack\.com/(?:@[^/]+|home/post)/p-(\d+)#i', $url, $m)) {
-        return $m[1];
+function parse_substack_url(string $url): ?array {
+    // substack.com/@username/p-ID
+    if (preg_match('#substack\.com/@([^/?#]+)/p-(\d+)#i', $url, $m)) {
+        return ['username' => $m[1], 'post_id' => $m[2]];
+    }
+    // substack.com/home/post/p-ID (reader URL, no username)
+    if (preg_match('#substack\.com/home/post/p-(\d+)#i', $url, $m)) {
+        return ['username' => null, 'post_id' => $m[1]];
     }
     return null;
 }
 
-/**
- * Fetch conținut articol via API-ul public Substack.
- * substack.com/api/v1/post/{id} returnează JSON cu body_html pentru articole gratuite.
- */
-function fetch_substack_post_text(string $post_id): string {
-    $api_url = 'https://substack.com/api/v1/post/' . $post_id;
+function substack_json_fetch(string $url): ?array {
     $ctx = stream_context_create([
         'http' => [
             'timeout' => 15,
-            'header' => "User-Agent: Mozilla/5.0\r\nAccept: application/json\r\n",
+            'header' => "User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1)\r\nAccept: application/json\r\n",
             'ignore_errors' => true,
         ],
         'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
     ]);
-    $json = @file_get_contents($api_url, false, $ctx);
-    if (!$json) return '';
-    $data = json_decode($json, true);
-    if (!$data) return '';
-    $html = $data['body_html'] ?? ($data['truncated_body_text'] ?? '');
+    $json = @file_get_contents($url, false, $ctx);
+    return $json ? json_decode($json, true) : null;
+}
+
+/**
+ * Obține textul complet al unui articol Substack gratuit via API:
+ *   1. Lookup profil public → subdomain newsletter
+ *   2. {subdomain}.substack.com/api/v1/posts/{id} → body_html
+ */
+function fetch_substack_post_text(string $username, string $post_id): string {
+    // Pas 1: găsim subdomain-ul newsletterului din profilul public
+    $subdomain = null;
+    if ($username) {
+        $profile = substack_json_fetch("https://substack.com/api/v1/user/$username/public_profile");
+        $subdomain = $profile['primaryPublication']['subdomain']
+            ?? $profile['primary_publication']['subdomain']
+            ?? $profile['publication']['subdomain']
+            ?? null;
+    }
+
+    // Pas 2: dacă am subdomain-ul, cerem articolul direct din API-ul publicației
+    if ($subdomain) {
+        $data = substack_json_fetch("https://$subdomain.substack.com/api/v1/posts/$post_id");
+        $html = $data['body_html'] ?? '';
+        if ($html) return extract_article_text($html);
+    }
+
+    // Fallback: încearcă API-ul general substack.com (funcționează uneori)
+    $data = substack_json_fetch("https://substack.com/api/v1/post/$post_id");
+    $html = $data['body_html'] ?? '';
     return $html ? extract_article_text($html) : '';
 }
 
 function compute_reading_time(string $url): int {
     $words = 0;
 
-    // Pentru Substack, API-ul public returnează body_html complet fără login.
-    $substack_id = extract_substack_post_id($url);
-    if ($substack_id) {
-        $text = fetch_substack_post_text($substack_id);
+    // Pentru Substack: lookup profil → subdomain → API articol → body_html complet.
+    $substack = parse_substack_url($url);
+    if ($substack) {
+        $text = fetch_substack_post_text($substack['username'] ?? '', $substack['post_id']);
         $words = count_words($text);
     }
 

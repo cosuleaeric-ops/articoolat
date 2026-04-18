@@ -29,9 +29,24 @@ $url = trim($_GET['url'] ?? '');
 
         <?php if ($url): ?>
         <?php
-            // 0. Substack API (dacă e URL substack cu post ID)
-            $substack_id = extract_substack_post_id($url);
-            $substack_text = $substack_id ? fetch_substack_post_text($substack_id) : '';
+            // 0. Substack: profil → subdomain → API articol
+            $substack = parse_substack_url($url);
+            $substack_text = '';
+            $substack_debug = '';
+            if ($substack) {
+                $username = $substack['username'] ?? '';
+                $post_id  = $substack['post_id'];
+                $subdomain = null;
+                if ($username) {
+                    $profile = substack_json_fetch("https://substack.com/api/v1/user/$username/public_profile");
+                    $subdomain = $profile['primaryPublication']['subdomain']
+                        ?? $profile['primary_publication']['subdomain']
+                        ?? $profile['publication']['subdomain']
+                        ?? null;
+                }
+                $substack_debug = "username=$username  post_id=$post_id  subdomain=" . ($subdomain ?? 'N/A');
+                $substack_text = fetch_substack_post_text($username, $post_id);
+            }
             $wc_substack = count_words($substack_text);
 
             // 1. Direct HTML fetch
@@ -52,9 +67,10 @@ $url = trim($_GET['url'] ?? '');
             <h2>Rezultat final: <?= $final ?> min</h2>
         </div>
 
-        <?php if ($substack_id): ?>
+        <?php if ($substack): ?>
         <div class="section">
-            <h2>0. Substack API (post <?= $substack_id ?>) — <?= $wc_substack ?> cuvinte</h2>
+            <h2>0. Substack API — <?= $wc_substack ?> cuvinte</h2>
+            <p class="text-xs text-muted mb-2"><?= htmlspecialchars($substack_debug) ?></p>
             <pre><?= htmlspecialchars(mb_substr($substack_text, 0, 2000)) ?><?= strlen($substack_text) > 2000 ? "\n... [trunchiat]" : '' ?></pre>
         </div>
         <?php endif; ?>
