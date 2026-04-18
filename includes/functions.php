@@ -81,3 +81,43 @@ function get_tags(): array {
     $settings = load_settings();
     return array_map('trim', explode(',', $settings['tags']));
 }
+
+/**
+ * Estimate reading time in minutes from raw HTML.
+ * Strips scripts/styles/nav/header/footer, prefers <article>/<main> content,
+ * counts words and clamps to a sane range. Always returns >= 1.
+ */
+function estimate_reading_time(string $html): int {
+    if (!$html) return 3;
+
+    // Remove non-content blocks (script/style/noscript + nav/header/footer/aside + SVG)
+    $clean = preg_replace('#<(script|style|noscript|template|svg)\b[^>]*>.*?</\1>#is', ' ', $html);
+    $clean = preg_replace('#<(nav|header|footer|aside|form)\b[^>]*>.*?</\1>#is', ' ', $clean);
+    // Drop HTML comments
+    $clean = preg_replace('/<!--.*?-->/s', ' ', $clean);
+
+    // Prefer the main article content if present
+    $content = '';
+    if (preg_match('#<article\b[^>]*>(.*?)</article>#is', $clean, $m)) {
+        $content = $m[1];
+    } elseif (preg_match('#<main\b[^>]*>(.*?)</main>#is', $clean, $m)) {
+        $content = $m[1];
+    } elseif (preg_match('#<div[^>]+(?:id|class)=["\'][^"\']*(post-content|entry-content|article-body|post-body|story-body)[^"\']*["\'][^>]*>(.*?)</div>#is', $clean, $m)) {
+        $content = $m[2];
+    } else {
+        $content = $clean;
+    }
+
+    $text = strip_tags($content);
+    $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+    $text = preg_replace('/\s+/u', ' ', trim($text));
+
+    if (!$text) return 3;
+
+    // Count words (Unicode-aware)
+    $word_count = preg_match_all('/[\p{L}\p{N}]+/u', $text);
+    if ($word_count < 50) return 3; // too little usable text — default
+
+    $minutes = (int) round($word_count / 238); // 238 WPM avg
+    return max(1, min(120, $minutes));
+}

@@ -20,6 +20,7 @@ $image_url = trim($input['image_url'] ?? '');
 $tag = trim($input['tag'] ?? 'General');
 $submitted_by = trim($input['submitted_by'] ?? '') ?: 'Anonim';
 $reading_time = intval($input['reading_time'] ?? 0);
+if ($reading_time < 1) { $reading_time = 3; } // fallback dacă fetch-meta a eșuat
 
 if (!$url || !$title) {
     echo json_encode(['success' => false, 'error' => 'URL si titlu sunt obligatorii']);
@@ -52,7 +53,7 @@ $stmt->bindValue(':img', $image_url, SQLITE3_TEXT);
 $stmt->bindValue(':domain', $domain, SQLITE3_TEXT);
 $stmt->bindValue(':tag', $tag, SQLITE3_TEXT);
 $stmt->bindValue(':by', $submitted_by, SQLITE3_TEXT);
-$stmt->bindValue(':rt', $reading_time ?: null, SQLITE3_INTEGER);
+$stmt->bindValue(':rt', $reading_time, SQLITE3_INTEGER);
 $stmt->execute();
 
 // Auto-vote for submitter

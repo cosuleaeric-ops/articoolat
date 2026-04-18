@@ -3,6 +3,8 @@ header('Content-Type: application/json');
 error_reporting(0);
 ini_set('display_errors', 0);
 
+require_once __DIR__ . '/../includes/functions.php';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'error' => 'Method not allowed']);
     exit;
@@ -69,11 +71,8 @@ if (preg_match('/<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+
     }
 }
 
-// Estimate reading time: strip tags, count words, divide by 238 WPM
-$text = strip_tags($html);
-$text = preg_replace('/\s+/', ' ', $text);
-$word_count = str_word_count($text);
-$reading_time = max(1, round($word_count / 238));
+// Estimate reading time using the shared helper (strips scripts/nav, prefers article/main)
+$reading_time = estimate_reading_time($html);
 
 echo json_encode([
     'success' => true,
