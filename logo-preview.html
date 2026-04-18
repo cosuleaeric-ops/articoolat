@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logo Preview — Articoolat</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f3f4f6; font-family: 'Nunito', sans-serif; padding: 40px 24px; }
+  h1 { font-size: 20px; font-weight: 800; color: #1c1917; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #78716c; margin-bottom: 36px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    cursor: pointer;
+    transition: box-shadow .15s, transform .15s;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.12); transform: translateY(-2px); }
+  .label { font-size: 12px; color: #78716c; text-align: center; line-height: 1.4; }
+  .icon { width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+
+<h1>Logo Preview — Articoolat</h1>
+<p class="sub">Spune numărul care îți place.</p>
+
+<div class="grid">
+
+  <!-- 5. Fulger -->
+  <div class="card">
+    <div class="icon">
+      <svg width="40" height="52" viewBox="0 0 40 52" fill="none">
+        <path d="M24 2L4 28h14l-4 22 22-28H22L24 2z" fill="#f915b1"/>
+      </svg>
+    </div>
+    <div class="label">1. Fulger</div>
+  </div>
+
+  <!-- 6. Lupă -->
+  <div class="card">
+    <div class="icon">
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+        <circle cx="20" cy="20" r="16" stroke="#f915b1" stroke-width="5"/>
+        <line x1="31" y1="31" x2="46" y2="46" stroke="#f915b1" stroke-width="5" stroke-linecap="round"/>
+        <path d="M14 20c-2-4 1-9 6-10" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>
+      </svg>
+    </div>
+    <div class="label">2. Lupă</div>
+  </div>
+
+  <!-- 10. Bookmark -->
+  <div class="card">
+    <div class="icon">
+      <svg width="40" height="52" viewBox="0 0 40 52" fill="none">
+        <path d="M4 4h32a2 2 0 0 1 2 2v42L20 38 2 48V6a2 2 0 0 1 2-2z" fill="#f915b1"/>
+        <path d="M13 20h14M13 27h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="label">3. Bookmark</div>
+  </div>
+
+  <!-- Carte deschisă -->
+  <div class="card">
+    <div class="icon">
+      <svg width="56" height="44" viewBox="0 0 56 44" fill="none">
+        <path d="M28 8C22 4 12 4 4 6v30c8-2 16-2 24 2V8z" fill="#f915b1"/>
+        <path d="M28 8c6-4 16-4 24-2v30c-8-2-16-2-24 2V8z" fill="#b5108a"/>
+        <line x1="28" y1="8" x2="28" y2="40" stroke="white" stroke-width="1.5" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="label">4. Carte deschisă</div>
+  </div>
+
+  <!-- Ochelari de citit -->
+  <div class="card">
+    <div class="icon">
+      <svg width="56" height="36" viewBox="0 0 56 36" fill="none">
+        <circle cx="14" cy="22" r="12" stroke="#f915b1" stroke-width="4"/>
+        <circle cx="42" cy="22" r="12" stroke="#f915b1" stroke-width="4"/>
+        <path d="M26 22h4" stroke="#f915b1" stroke-width="4" stroke-linecap="round"/>
+        <path d="M2 16C2 10 6 6 14 6" stroke="#f915b1" stroke-width="4" stroke-linecap="round"/>
+        <path d="M54 16C54 10 50 6 42 6" stroke="#f915b1" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="label">5. Ochelari de citit</div>
+  </div>
+
+  <!-- Pagină cu colț îndoit -->
+  <div class="card">
+    <div class="icon">
+      <svg width="44" height="52" viewBox="0 0 44 52" fill="none">
+        <path d="M4 4h26l10 10v34a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z" fill="#f915b1"/>
+        <path d="M30 4l10 10H30V4z" fill="#b5108a"/>
+        <path d="M11 22h22M11 30h16M11 38h18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="label">6. Pagină cu colț îndoit</div>
+  </div>
+
+  <!-- Cursor / linie de text -->
+  <div class="card">
+    <div class="icon">
+      <svg width="48" height="52" viewBox="0 0 48 52" fill="none">
+        <path d="M8 10h32M8 22h32M8 34h20" stroke="#f915b1" stroke-width="4.5" stroke-linecap="round"/>
+        <rect x="32" y="28" width="5" height="20" rx="2.5" fill="#f915b1"/>
+      </svg>
+    </div>
+    <div class="label">7. Text + cursor</div>
+  </div>
+
+</div>
+
+<p style="margin-top:32px;font-size:13px;color:#78716c">Spune numărul care îți place și îl implementăm.</p>
+
+</body>
+</html>

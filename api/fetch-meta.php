@@ -18,20 +18,7 @@ if (!$url || !filter_var($url, FILTER_VALIDATE_URL)) {
     exit;
 }
 
-$ctx = stream_context_create([
-    'http' => [
-        'timeout' => 10,
-        'header' => "User-Agent: Mozilla/5.0 (compatible; Articoolat/1.0)\r\n",
-        'follow_location' => true,
-        'max_redirects' => 5
-    ],
-    'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false
-    ]
-]);
-
-$html = @file_get_contents($url, false, $ctx);
+$html = fetch_article_html($url);
 
 if (!$html) {
     echo json_encode(['success' => false, 'error' => 'Nu am putut accesa URL-ul']);

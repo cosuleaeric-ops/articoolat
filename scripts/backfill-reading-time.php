@@ -17,16 +17,6 @@ $db = get_db();
 $where = $all ? '1=1' : '(reading_time IS NULL OR reading_time < 1 OR reading_time > 60)';
 $result = $db->query("SELECT id, url, reading_time FROM articles WHERE {$where} ORDER BY id");
 
-$ctx = stream_context_create([
-    'http' => [
-        'timeout' => 10,
-        'header' => "User-Agent: Mozilla/5.0 (compatible; Articoolat/1.0)\r\n",
-        'follow_location' => true,
-        'max_redirects' => 5,
-    ],
-    'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-]);
-
 $updated = 0;
 $failed = 0;
 
@@ -35,7 +25,7 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
     $url = $row['url'];
     $old = $row['reading_time'];
 
-    $html = @file_get_contents($url, false, $ctx);
+    $html = fetch_article_html($url);
     if (!$html) {
         // Fallback: minim 3 min dacă nu putem ajunge la pagină
         $new = 3;

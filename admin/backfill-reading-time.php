@@ -41,16 +41,6 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
             $db = get_db();
             $result = $db->query("SELECT id, url, reading_time FROM articles ORDER BY id");
 
-            $ctx = stream_context_create([
-                'http' => [
-                    'timeout' => 10,
-                    'header' => "User-Agent: Mozilla/5.0 (compatible; Articoolat/1.0)\r\n",
-                    'follow_location' => true,
-                    'max_redirects' => 5,
-                ],
-                'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-            ]);
-
             $lines = [];
             $updated = 0;
             $failed = 0;
@@ -60,7 +50,7 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
                 $url = $row['url'];
                 $old = $row['reading_time'];
 
-                $html = @file_get_contents($url, false, $ctx);
+                $html = fetch_article_html($url);
                 if (!$html) {
                     $new = 3;
                     $failed++;

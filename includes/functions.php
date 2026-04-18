@@ -83,6 +83,39 @@ function get_tags(): array {
 }
 
 /**
+ * Descarcă HTML-ul unui URL folosind un User-Agent de Chrome real
+ * (ca să nu fim blocați de Medium, Cloudflare etc.).
+ * Returnează string-ul HTML sau false la eșec.
+ */
+function fetch_article_html(string $url) {
+    $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+    $headers = [
+        "User-Agent: $ua",
+        'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language: en-US,en;q=0.9,ro;q=0.8',
+        'Accept-Encoding: identity', // fără gzip ca să nu trebuiască să decodăm
+        'Connection: close',
+        'Upgrade-Insecure-Requests: 1',
+    ];
+
+    $ctx = stream_context_create([
+        'http' => [
+            'timeout' => 12,
+            'header' => implode("\r\n", $headers) . "\r\n",
+            'follow_location' => true,
+            'max_redirects' => 5,
+            'ignore_errors' => true,
+        ],
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+        ],
+    ]);
+
+    return @file_get_contents($url, false, $ctx);
+}
+
+/**
  * Estimate reading time in minutes from raw HTML.
  * Strips scripts/styles/nav/header/footer, prefers <article>/<main> content,
  * counts words and clamps to a sane range. Always returns >= 1.
