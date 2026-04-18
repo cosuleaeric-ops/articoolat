@@ -75,7 +75,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                     <path d="M4 4h32a2 2 0 0 1 2 2v42L20 38 2 48V6a2 2 0 0 1 2-2z" fill="<?= e($settings['color_accent']) ?>"/>
                     <path d="M13 20h14M13 27h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>
-                <span class="text-xl font-bold tracking-tight">#articoolat</span>
+                <span class="text-xl font-bold tracking-tight"><?= e($settings['site_title']) ?></span>
             </a>
             <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
                 + Articol nou
