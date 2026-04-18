@@ -10,7 +10,7 @@ $nav_items = [
 <aside class="w-56 bg-surface min-h-screen p-4 flex flex-col border-r border-muted/20">
     <div class="mb-6">
         <h2 class="font-bold text-lg"><?= e($settings['site_title'] ?? 'Articoolat') ?> <span class="text-muted text-sm font-normal">— Admin</span></h2>
-        <a href="/" target="_blank" class="text-xs text-accent hover:underline mt-1 inline-block">🟢 Vezi site</a>
+        <a href="/" class="text-xs text-accent hover:underline mt-1 inline-block">🟢 Vezi site</a>
     </div>
     <nav class="flex flex-col gap-1 flex-1">
         <?php foreach ($nav_items as $page => $item): ?>
