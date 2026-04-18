@@ -154,10 +154,27 @@ function count_words(string $text): int {
  */
 function fetch_article_text_via_reader(string $url): string {
     $reader_url = 'https://r.jina.ai/' . $url;
+
+    // Cerem lui Jina să elimine comentariile și elementele non-articol din DOM
+    $remove = implode(', ', [
+        '#comments', '.comments', '.comments-area', '.comments-section',
+        '.comment-list', '.comment-respond', '.wp-block-comments',
+        '.post-comments', '#disqus_thread', '.disqus-comments',
+        '.related-posts', '.related-articles', '.you-may-also-like',
+        '.newsletter-signup', '.subscribe-form', '.sidebar',
+        'footer', '.site-footer', '.post-footer',
+    ]);
+
+    $headers = implode("\r\n", [
+        'User-Agent: Mozilla/5.0 Articoolat',
+        'Accept: text/plain',
+        'X-Remove-Selector: ' . $remove,
+    ]);
+
     $ctx = stream_context_create([
         'http' => [
             'timeout' => 20,
-            'header' => "User-Agent: Mozilla/5.0 Articoolat\r\nAccept: text/plain\r\n",
+            'header' => $headers . "\r\n",
             'follow_location' => true,
             'ignore_errors' => true,
         ],
@@ -166,11 +183,15 @@ function fetch_article_text_via_reader(string $url): string {
     $text = @file_get_contents($reader_url, false, $ctx);
     if (!$text) return '';
 
-    // Taie tot ce vine după secțiunea de comentarii / related posts
+    // Taie la primul marker textual de comentarii / related — catch-all pentru
+    // site-urile care nu folosesc clase standard
     $cutoff_patterns = [
-        '/\n#+\s*(Comments?|Leave\s+a\s+Reply|Related\s+Posts?|You\s+May\s+Also\s+Like|Responses?)\b/i',
+        '/\n#+\s*(Comments?|Responses?|Discussion|Leave\s+a\s+(comment|reply)|Add\s+a\s+comment)\b/i',
+        '/\n#+\s*(Related\s+(Posts?|Articles?|Stories?|Reading)|You\s+May\s+Also\s+(Like|Enjoy)|More\s+(from|on|like\s+this)|Keep\s+reading|Further\s+reading)\b/i',
         '/\n\*\*Comment\s+Rules/i',
         '/\n\d+\s+Comments?\s*\n/i',
+        '/\nView\s+all\s+comments\b/i',
+        '/\[\d+\s+comments?\]/i',
     ];
     foreach ($cutoff_patterns as $p) {
         if (preg_match($p, $text, $m, PREG_OFFSET_CAPTURE)) {
