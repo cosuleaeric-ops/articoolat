@@ -182,28 +182,57 @@ function is_js_heavy_domain(string $url): bool {
 }
 
 /**
+ * Extrage prima mențiune „N min read" dintr-un text (HTML sau markdown).
+ * Multe platforme (Medium, Substack) calculează deja durata și o afișează
+ * lângă autor — e cea mai precisă sursă.
+ */
+function extract_declared_reading_time(string $text): ?int {
+    if (!$text) return null;
+    if (preg_match('/(\d+)\s*min(?:ute)?s?\s*read/i', $text, $m)) {
+        $mins = (int) $m[1];
+        if ($mins >= 1 && $mins <= 120) return $mins;
+    }
+    return null;
+}
+
+/**
  * Calculează durata de citire în minute pentru un URL.
- * Domenii SPA cunoscute → direct Jina Reader. Restul → fetch direct, cu
- * fallback la Jina dacă textul e prea scurt. Ia maximul ca să nu subestimăm.
+ * Strategie:
+ *   1. Ia textul (direct, sau prin Jina Reader pentru domenii SPA).
+ *   2. Dacă platforma declară „X min read" — îl folosește direct (cel mai precis).
+ *   3. Altfel, numără cuvintele din conținutul extras.
  * Fallback final: 3 min.
  */
 function compute_reading_time(string $url): int {
-    $words = 0;
+    $html = '';
+    $reader = '';
 
-    if (!is_js_heavy_domain($url)) {
-        $html = fetch_article_html($url);
-        $words = count_words(extract_article_text($html ?: ''));
+    if (is_js_heavy_domain($url)) {
+        $reader = fetch_article_text_via_reader($url);
+    } else {
+        $html = fetch_article_html($url) ?: '';
     }
 
-    // Dacă fetch-ul direct n-a dat destul (sau e domeniu SPA), folosim Jina.
-    if ($words < 600) {
-        $reader_words = count_words(fetch_article_text_via_reader($url));
-        if ($reader_words > $words) $words = $reader_words;
+    // 1. Prima sursă de adevăr: valoarea declarată de site.
+    $declared = extract_declared_reading_time($reader ?: $html);
+    if ($declared !== null) return $declared;
+
+    // 2. Altfel, încercăm și Jina dacă n-am făcut-o deja (poate conține „min read")
+    if (!$reader && !is_js_heavy_domain($url)) {
+        $reader = fetch_article_text_via_reader($url);
+        $declared = extract_declared_reading_time($reader);
+        if ($declared !== null) return $declared;
     }
 
-    if ($words < 50) return 3; // fallback onest
-    $minutes = (int) round($words / 238);
-    return max(1, min(120, $minutes));
+    // 3. Fallback: word count — luăm minimul non-zero (e conservator;
+    //    max-ul tinde să umfle pentru că include și navbar/footer/recomandări).
+    $words_direct = $html ? count_words(extract_article_text($html)) : 0;
+    $words_reader = $reader ? count_words($reader) : 0;
+    $candidates = array_filter([$words_direct, $words_reader], fn($n) => $n >= 50);
+    $words = $candidates ? min($candidates) : 0;
+
+    if ($words < 50) return 3;
+    return max(1, min(120, (int) round($words / 238)));
 }
 
 /**
