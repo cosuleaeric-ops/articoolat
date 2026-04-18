@@ -8,7 +8,7 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_auth();
 
-set_time_limit(300);
+set_time_limit(600); // Jina Reader poate fi lent pe articole lungi
 ini_set('memory_limit', '256M');
 
 $run = isset($_GET['run']) && $_GET['run'] === '1';
@@ -50,15 +50,9 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
                 $url = $row['url'];
                 $old = $row['reading_time'];
 
-                $html = fetch_article_html($url);
-                if (!$html) {
-                    $new = 3;
-                    $failed++;
-                    $tag = '<span class="fail">FETCH-FAIL</span>';
-                } else {
-                    $new = estimate_reading_time($html);
-                    $tag = '<span class="ok">OK</span>';
-                }
+                $new = compute_reading_time($url);
+                $tag = $new === 3 ? '<span class="fail">FALLBACK</span>' : '<span class="ok">OK</span>';
+                if ($new === 3) $failed++;
 
                 $stmt = $db->prepare("UPDATE articles SET reading_time = :rt WHERE id = :id");
                 $stmt->bindValue(':rt', $new, SQLITE3_INTEGER);

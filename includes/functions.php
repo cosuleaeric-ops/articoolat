@@ -116,20 +116,16 @@ function fetch_article_html(string $url) {
 }
 
 /**
- * Estimate reading time in minutes from raw HTML.
- * Strips scripts/styles/nav/header/footer, prefers <article>/<main> content,
- * counts words and clamps to a sane range. Always returns >= 1.
+ * Extract readable text from HTML: strips script/style/nav/header/footer,
+ * prefers <article>/<main>/known content divs, returns plain text.
  */
-function estimate_reading_time(string $html): int {
-    if (!$html) return 3;
+function extract_article_text(string $html): string {
+    if (!$html) return '';
 
-    // Remove non-content blocks (script/style/noscript + nav/header/footer/aside + SVG)
     $clean = preg_replace('#<(script|style|noscript|template|svg)\b[^>]*>.*?</\1>#is', ' ', $html);
     $clean = preg_replace('#<(nav|header|footer|aside|form)\b[^>]*>.*?</\1>#is', ' ', $clean);
-    // Drop HTML comments
     $clean = preg_replace('/<!--.*?-->/s', ' ', $clean);
 
-    // Prefer the main article content if present
     $content = '';
     if (preg_match('#<article\b[^>]*>(.*?)</article>#is', $clean, $m)) {
         $content = $m[1];
@@ -143,14 +139,63 @@ function estimate_reading_time(string $html): int {
 
     $text = strip_tags($content);
     $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-    $text = preg_replace('/\s+/u', ' ', trim($text));
+    return preg_replace('/\s+/u', ' ', trim($text));
+}
 
-    if (!$text) return 3;
+/** Unicode-aware word count. */
+function count_words(string $text): int {
+    return $text ? (int) preg_match_all('/[\p{L}\p{N}]+/u', $text) : 0;
+}
 
-    // Count words (Unicode-aware)
-    $word_count = preg_match_all('/[\p{L}\p{N}]+/u', $text);
-    if ($word_count < 50) return 3; // too little usable text — default
+/**
+ * Fallback: folosește r.jina.ai (Jina AI Reader) care randează paginile cu JS
+ * și returnează textul curat. Gratuit, fără auth. Folosit când fetch direct
+ * e blocat (Cloudflare challenge, Medium, X etc.).
+ */
+function fetch_article_text_via_reader(string $url): string {
+    $reader_url = 'https://r.jina.ai/' . $url;
+    $ctx = stream_context_create([
+        'http' => [
+            'timeout' => 20,
+            'header' => "User-Agent: Mozilla/5.0 Articoolat\r\nAccept: text/plain\r\n",
+            'follow_location' => true,
+            'ignore_errors' => true,
+        ],
+        'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+    ]);
+    $text = @file_get_contents($reader_url, false, $ctx);
+    return $text ? preg_replace('/\s+/u', ' ', trim($text)) : '';
+}
 
-    $minutes = (int) round($word_count / 238); // 238 WPM avg
+/**
+ * Calculează durata de citire în minute pentru un URL.
+ * Încearcă fetch direct; dacă textul extras are sub 200 cuvinte (site blocat
+ * sau SPA gol), încearcă prin Jina Reader. Fallback: 3 min.
+ */
+function compute_reading_time(string $url): int {
+    $html = fetch_article_html($url);
+    $text = extract_article_text($html ?: '');
+    $words = count_words($text);
+
+    if ($words < 200) {
+        $reader_text = fetch_article_text_via_reader($url);
+        $reader_words = count_words($reader_text);
+        if ($reader_words > $words) {
+            $words = $reader_words;
+        }
+    }
+
+    if ($words < 50) return 3; // fallback onest
+    $minutes = (int) round($words / 238);
     return max(1, min(120, $minutes));
+}
+
+/**
+ * Compatibilitate: primește HTML și întoarce minute (folosit în cod vechi).
+ */
+function estimate_reading_time(string $html): int {
+    $text = extract_article_text($html);
+    $words = count_words($text);
+    if ($words < 50) return 3;
+    return max(1, min(120, (int) round($words / 238)));
 }

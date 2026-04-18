@@ -58,8 +58,8 @@ if (preg_match('/<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+
     }
 }
 
-// Estimate reading time using the shared helper (strips scripts/nav, prefers article/main)
-$reading_time = estimate_reading_time($html);
+// Calculează durata de citire (cu fallback prin Jina Reader dacă site-ul e blocat)
+$reading_time = compute_reading_time($url);
 
 echo json_encode([
     'success' => true,
