@@ -223,11 +223,10 @@ function is_js_heavy_domain(string $url): bool {
  */
 function extract_declared_reading_time(string $text): ?int {
     if (!$text) return null;
-    if (preg_match('/(\d+)\s*min(?:ute)?s?\s*read/i', $text, $m)) {
-        $mins = (int) $m[1];
-        if ($mins >= 1 && $mins <= 120) return $mins;
-    }
-    return null;
+    preg_match_all('/(\d+)\s*min(?:ute)?s?\s*read/i', $text, $matches);
+    if (empty($matches[1])) return null;
+    $times = array_filter(array_map('intval', $matches[1]), fn($m) => $m >= 1 && $m <= 120);
+    return $times ? max($times) : null;
 }
 
 /**
@@ -264,7 +263,7 @@ function compute_reading_time(string $url): int {
     $words_direct = $html ? count_words(extract_article_text($html)) : 0;
     $words_reader = $reader ? count_words($reader) : 0;
     $candidates = array_filter([$words_direct, $words_reader], fn($n) => $n >= 50);
-    $words = $candidates ? min($candidates) : 0;
+    $words = $candidates ? max($candidates) : 0;
 
     if ($words < 50) return 3;
     return max(1, min(120, (int) round($words / 238)));
