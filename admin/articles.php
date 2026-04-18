@@ -17,11 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && verif
 
 // Handle edit
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id']) && verify_csrf($_POST['csrf'] ?? '')) {
-    $stmt = $db->prepare("UPDATE articles SET title = :title, description = :desc, tag = :tag, url = :url WHERE id = :id");
+    $rt_raw = trim($_POST['reading_time'] ?? '');
+    $rt = ($rt_raw !== '' && ctype_digit($rt_raw) && (int)$rt_raw > 0) ? (int)$rt_raw : null;
+    $stmt = $db->prepare("UPDATE articles SET title = :title, description = :desc, tag = :tag, url = :url, reading_time = COALESCE(:rt, reading_time) WHERE id = :id");
     $stmt->bindValue(':title', trim($_POST['title']), SQLITE3_TEXT);
     $stmt->bindValue(':desc', trim($_POST['description']), SQLITE3_TEXT);
     $stmt->bindValue(':tag', trim($_POST['tag']), SQLITE3_TEXT);
     $stmt->bindValue(':url', trim($_POST['url']), SQLITE3_TEXT);
+    $stmt->bindValue(':rt', $rt, $rt !== null ? SQLITE3_INTEGER : SQLITE3_NULL);
     $stmt->bindValue(':id', intval($_POST['edit_id']), SQLITE3_INTEGER);
     $stmt->execute();
     header('Location: /admin/articles.php?saved=1');
@@ -87,13 +90,20 @@ if ($edit_id) {
                     <label class="block text-sm text-muted mb-1">Descriere</label>
                     <textarea name="description" rows="2" class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent resize-none"><?= e($edit_article['description']) ?></textarea>
                 </div>
-                <div>
-                    <label class="block text-sm text-muted mb-1">Categorie</label>
-                    <select name="tag" class="bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
-                        <?php foreach ($tags as $t): ?>
-                        <option value="<?= e($t) ?>" <?= $edit_article['tag'] === $t ? 'selected' : '' ?>><?= e($t) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="flex gap-4">
+                    <div>
+                        <label class="block text-sm text-muted mb-1">Categorie</label>
+                        <select name="tag" class="bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                            <?php foreach ($tags as $t): ?>
+                            <option value="<?= e($t) ?>" <?= $edit_article['tag'] === $t ? 'selected' : '' ?>><?= e($t) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-1">Timp citire (min) — lasă gol pentru a păstra valoarea curentă (<?= (int)($edit_article['reading_time'] ?? 0) ?> min)</label>
+                        <input type="number" name="reading_time" min="1" max="120" placeholder="<?= (int)($edit_article['reading_time'] ?? 0) ?>"
+                               class="w-28 bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                    </div>
                 </div>
                 <div class="flex gap-2">
                     <button type="submit" class="bg-accent text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90">Salveaza</button>
