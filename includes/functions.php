@@ -252,37 +252,72 @@ function extract_declared_reading_time(string $text): ?int {
  *   3. Dacă textul e scurt (paywall/blocat) — fallback la timpul declarat de site.
  * Fallback final: 3 min.
  */
+/**
+ * Extrage ID-ul numeric dintr-un URL Substack (substack.com/@author/p-ID sau /home/post/p-ID).
+ * Returnează null dacă nu e un URL Substack cu post ID.
+ */
+function extract_substack_post_id(string $url): ?string {
+    if (preg_match('#substack\.com/(?:@[^/]+|home/post)/p-(\d+)#i', $url, $m)) {
+        return $m[1];
+    }
+    return null;
+}
+
+/**
+ * Fetch conținut articol via API-ul public Substack.
+ * substack.com/api/v1/post/{id} returnează JSON cu body_html pentru articole gratuite.
+ */
+function fetch_substack_post_text(string $post_id): string {
+    $api_url = 'https://substack.com/api/v1/post/' . $post_id;
+    $ctx = stream_context_create([
+        'http' => [
+            'timeout' => 15,
+            'header' => "User-Agent: Mozilla/5.0\r\nAccept: application/json\r\n",
+            'ignore_errors' => true,
+        ],
+        'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+    ]);
+    $json = @file_get_contents($api_url, false, $ctx);
+    if (!$json) return '';
+    $data = json_decode($json, true);
+    if (!$data) return '';
+    $html = $data['body_html'] ?? ($data['truncated_body_text'] ?? '');
+    return $html ? extract_article_text($html) : '';
+}
+
 function compute_reading_time(string $url): int {
-    $html = '';
-    $reader = '';
+    $words = 0;
 
-    if (is_js_heavy_domain($url)) {
-        // Încearcă să rezolve URL-ul canonical (substack.com/home/ și @author/ servesc preview limitat).
-        $preview_html = fetch_article_html($url) ?: '';
-        $canonical = $preview_html ? extract_canonical_url($preview_html) : null;
-        $fetch_url = ($canonical && $canonical !== $url) ? $canonical : $url;
-        $reader = fetch_article_text_via_reader($fetch_url);
-    } else {
-        $html = fetch_article_html($url) ?: '';
-        // Încearcă și Jina pentru extracție mai curată
-        $reader = fetch_article_text_via_reader($url);
+    // Pentru Substack, API-ul public returnează body_html complet fără login.
+    $substack_id = extract_substack_post_id($url);
+    if ($substack_id) {
+        $text = fetch_substack_post_text($substack_id);
+        $words = count_words($text);
     }
 
-    // 1. Calculăm din word count dacă avem text suficient (≥200 cuvinte).
-    //    Declared time e nesigur — poate proveni din articole recomandate/sidebar.
-    $words_direct = $html ? count_words(extract_article_text($html)) : 0;
-    $words_reader = $reader ? count_words($reader) : 0;
-    $words = max($words_direct, $words_reader);
+    if ($words < 200) {
+        $html = '';
+        $reader = '';
 
-    if ($words >= 200) {
-        return max(1, min(120, (int) round($words / 238)));
+        if (is_js_heavy_domain($url)) {
+            $reader = fetch_article_text_via_reader($url);
+        } else {
+            $html = fetch_article_html($url) ?: '';
+            $reader = fetch_article_text_via_reader($url);
+        }
+
+        $words_direct = $html ? count_words(extract_article_text($html)) : 0;
+        $words_reader = $reader ? count_words($reader) : 0;
+        $words = max($words, $words_direct, $words_reader);
+
+        if ($words < 200) {
+            $declared = extract_declared_reading_time($reader ?: $html);
+            if ($declared !== null) return $declared;
+            return 3;
+        }
     }
 
-    // 2. Text insuficient (articol paywall/blocat) — folosim timpul declarat de platformă.
-    $declared = extract_declared_reading_time($reader ?: $html);
-    if ($declared !== null) return $declared;
-
-    return 3;
+    return max(1, min(120, (int) round($words / 238)));
 }
 
 /**

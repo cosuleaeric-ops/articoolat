@@ -29,6 +29,11 @@ $url = trim($_GET['url'] ?? '');
 
         <?php if ($url): ?>
         <?php
+            // 0. Substack API (dacă e URL substack cu post ID)
+            $substack_id = extract_substack_post_id($url);
+            $substack_text = $substack_id ? fetch_substack_post_text($substack_id) : '';
+            $wc_substack = count_words($substack_text);
+
             // 1. Direct HTML fetch
             $html_direct = fetch_article_html($url) ?: '';
             $canonical = $html_direct ? extract_canonical_url($html_direct) : null;
@@ -39,26 +44,20 @@ $url = trim($_GET['url'] ?? '');
             $jina_orig = fetch_article_text_via_reader($url);
             $wc_jina_orig = count_words($jina_orig);
 
-            // 3. Jina pe canonical (dacă există)
-            $jina_canonical = '';
-            $wc_jina_canonical = 0;
-            if ($canonical && $canonical !== $url) {
-                $jina_canonical = fetch_article_text_via_reader($canonical);
-                $wc_jina_canonical = count_words($jina_canonical);
-            }
-
-            // 4. Rezultat final compute_reading_time
+            // 3. Rezultat final compute_reading_time
             $final = compute_reading_time($url);
         ?>
 
         <div class="section">
             <h2>Rezultat final: <?= $final ?> min</h2>
-            <?php if ($canonical && $canonical !== $url): ?>
-                <p class="text-sm text-muted mb-2">Canonical rezolvat: <strong><?= htmlspecialchars($canonical) ?></strong></p>
-            <?php else: ?>
-                <p class="text-sm text-muted mb-2">Nu s-a găsit canonical diferit de URL original.</p>
-            <?php endif; ?>
         </div>
+
+        <?php if ($substack_id): ?>
+        <div class="section">
+            <h2>0. Substack API (post <?= $substack_id ?>) — <?= $wc_substack ?> cuvinte</h2>
+            <pre><?= htmlspecialchars(mb_substr($substack_text, 0, 2000)) ?><?= strlen($substack_text) > 2000 ? "\n... [trunchiat]" : '' ?></pre>
+        </div>
+        <?php endif; ?>
 
         <div class="section">
             <h2>1. Direct HTML fetch — <?= $wc_direct ?> cuvinte</h2>
@@ -69,13 +68,6 @@ $url = trim($_GET['url'] ?? '');
             <h2>2. Jina pe URL original — <?= $wc_jina_orig ?> cuvinte</h2>
             <pre><?= htmlspecialchars(mb_substr($jina_orig, 0, 2000)) ?><?= strlen($jina_orig) > 2000 ? "\n... [trunchiat]" : '' ?></pre>
         </div>
-
-        <?php if ($canonical && $canonical !== $url): ?>
-        <div class="section">
-            <h2>3. Jina pe canonical — <?= $wc_jina_canonical ?> cuvinte</h2>
-            <pre><?= htmlspecialchars(mb_substr($jina_canonical, 0, 2000)) ?><?= strlen($jina_canonical) > 2000 ? "\n... [trunchiat]" : '' ?></pre>
-        </div>
-        <?php endif; ?>
 
         <?php endif; ?>
     </main>
