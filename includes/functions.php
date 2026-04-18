@@ -164,7 +164,21 @@ function fetch_article_text_via_reader(string $url): string {
         'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
     ]);
     $text = @file_get_contents($reader_url, false, $ctx);
-    return $text ? preg_replace('/\s+/u', ' ', trim($text)) : '';
+    if (!$text) return '';
+
+    // Taie tot ce vine după secțiunea de comentarii / related posts
+    $cutoff_patterns = [
+        '/\n#+\s*(Comments?|Leave\s+a\s+Reply|Related\s+Posts?|You\s+May\s+Also\s+Like|Responses?)\b/i',
+        '/\n\*\*Comment\s+Rules/i',
+        '/\n\d+\s+Comments?\s*\n/i',
+    ];
+    foreach ($cutoff_patterns as $p) {
+        if (preg_match($p, $text, $m, PREG_OFFSET_CAPTURE)) {
+            $text = substr($text, 0, $m[0][1]);
+        }
+    }
+
+    return preg_replace('/\s+/u', ' ', trim($text));
 }
 
 /**
