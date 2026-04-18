@@ -191,7 +191,6 @@ function fetch_article_text_via_reader(string $url): string {
         '/\n\*\*Comment\s+Rules/i',
         '/\n\d+\s+Comments?\s*\n/i',
         '/\nView\s+all\s+comments\b/i',
-        '/\[\d+\s+comments?\]/i',
     ];
     foreach ($cutoff_patterns as $p) {
         if (preg_match($p, $text, $m, PREG_OFFSET_CAPTURE)) {
