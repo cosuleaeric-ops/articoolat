@@ -88,6 +88,21 @@ function get_tags(): array {
  * (ca să nu fim blocați de Medium, Cloudflare etc.).
  * Returnează string-ul HTML sau false la eșec.
  */
+/**
+ * Încearcă să extragă URL-ul canonical dintr-un HTML.
+ * Util pentru URL-uri Substack reader (substack.com/home/ sau substack.com/@author/)
+ * care servesc preview limitat — canonicalul pointează la subdomain-ul complet.
+ */
+function extract_canonical_url(string $html): ?string {
+    if (preg_match('/<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)["\']/i', $html, $m)) {
+        return trim($m[1]) ?: null;
+    }
+    if (preg_match('/<meta[^>]+property=["\']og:url["\'][^>]+content=["\']([^"\']+)["\']/i', $html, $m)) {
+        return trim($m[1]) ?: null;
+    }
+    return null;
+}
+
 function fetch_article_html(string $url) {
     $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
     $headers = [
@@ -242,7 +257,11 @@ function compute_reading_time(string $url): int {
     $reader = '';
 
     if (is_js_heavy_domain($url)) {
-        $reader = fetch_article_text_via_reader($url);
+        // Încearcă să rezolve URL-ul canonical (substack.com/home/ și @author/ servesc preview limitat).
+        $preview_html = fetch_article_html($url) ?: '';
+        $canonical = $preview_html ? extract_canonical_url($preview_html) : null;
+        $fetch_url = ($canonical && $canonical !== $url) ? $canonical : $url;
+        $reader = fetch_article_text_via_reader($fetch_url);
     } else {
         $html = fetch_article_html($url) ?: '';
         // Încearcă și Jina pentru extracție mai curată

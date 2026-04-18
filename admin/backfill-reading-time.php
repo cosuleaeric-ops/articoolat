@@ -52,11 +52,15 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
 
                 // Debug: fetch text and show word counts
                 $is_js = is_js_heavy_domain($url);
-                $reader = fetch_article_text_via_reader($url);
+                $preview_html = $is_js ? (fetch_article_html($url) ?: '') : '';
+                $canonical = $preview_html ? extract_canonical_url($preview_html) : null;
+                $fetch_url = ($canonical && $canonical !== $url) ? $canonical : $url;
+                $reader = fetch_article_text_via_reader($fetch_url);
                 $html_raw = !$is_js ? (fetch_article_html($url) ?: '') : '';
                 $wc_reader = $reader ? count_words($reader) : 0;
                 $wc_direct = $html_raw ? count_words(extract_article_text($html_raw)) : 0;
                 $declared = extract_declared_reading_time($reader ?: $html_raw);
+                $canonical_label = ($canonical && $canonical !== $url) ? ' canonical→'.parse_url($canonical, PHP_URL_HOST) : '';
 
                 $new = compute_reading_time($url);
                 $tag = $new === 3 ? '<span class="fail">FALLBACK</span>' : '<span class="ok">OK</span>';
@@ -68,9 +72,9 @@ $run = isset($_GET['run']) && $_GET['run'] === '1';
                 $stmt->execute();
                 $updated++;
 
-                $lines[] = sprintf('[%s] #%d  %s->%d min  [jina:%dw direct:%dw declared:%s]  %s',
+                $lines[] = sprintf('[%s] #%d  %s->%d min  [jina:%dw direct:%dw declared:%s%s]  %s',
                     $tag, $id, $old === null ? 'null ' : $old.'min→', $new,
-                    $wc_reader, $wc_direct, $declared ?? 'none', e($url));
+                    $wc_reader, $wc_direct, $declared ?? 'none', $canonical_label, e($url));
             }
         ?>
             <div class="bg-surface rounded-xl p-6 mb-4">
