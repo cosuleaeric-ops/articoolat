@@ -13,7 +13,8 @@ $top_period = $_GET['period'] ?? 'all';
 // Build query based on tab
 switch ($tab) {
     case 'new':
-        $sql = "SELECT * FROM articles ORDER BY created_at DESC LIMIT 50";
+        $new_days = max(1, (int)($settings['new_days'] ?? 7));
+        $sql = "SELECT * FROM articles WHERE created_at >= datetime('now', '-{$new_days} days') ORDER BY created_at DESC LIMIT 50";
         break;
     case 'top':
         $sql = "SELECT * FROM articles ORDER BY votes DESC LIMIT 50";

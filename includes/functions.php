@@ -17,7 +17,8 @@ function load_settings(): array {
         'color_accent' => '#f97316',
         'color_text' => '#1c1917',
         'color_text_muted' => '#78716c',
-        'tags' => 'Tehnologie,Startup,Cultură,Știință,Afaceri,Design,Programare,România,Educație,Opinie'
+        'tags' => 'Tehnologie,Startup,Cultură,Știință,Afaceri,Design,Programare,România,Educație,Opinie',
+        'new_days' => 7
     ];
 
     if (file_exists($file)) {
