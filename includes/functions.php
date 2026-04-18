@@ -7,6 +7,7 @@ function load_settings(): array {
         'site_subtitle' => 'Internetul e plin de articole bune. Problema e că nu le găsești.',
         'heading_size' => '36',
         'site_footer' => 'Articoolat — Pentru cei care preferă să citească.',
+        'site_tab_description' => 'cele mai bune articole de pe internet',
         'admin_password_hash' => '',
         'auth_secret' => bin2hex(random_bytes(32)),
         'ga_script' => '',

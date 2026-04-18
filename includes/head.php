@@ -3,7 +3,7 @@ $settings = load_settings();
 ?>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= e($settings['site_title']) ?></title>
+<title><?= e($settings['site_title']) ?><?= !empty($settings['site_tab_description']) ? ' - ' . e($settings['site_tab_description']) : '' ?></title>
 <meta name="description" content="<?= e($settings['site_subtitle']) ?>">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="shortcut icon" href="/assets/favicon.svg">

@@ -7,6 +7,7 @@ $settings = load_settings();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) {
     $settings['site_title'] = trim($_POST['site_title'] ?? $settings['site_title']);
+    $settings['site_tab_description'] = trim($_POST['site_tab_description'] ?? $settings['site_tab_description']);
     $settings['site_subtitle'] = trim($_POST['site_subtitle'] ?? $settings['site_subtitle']);
     $settings['site_footer'] = trim($_POST['site_footer'] ?? $settings['site_footer']);
     $settings['color_bg'] = trim($_POST['color_bg'] ?? $settings['color_bg']);
@@ -45,6 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf'] ?? '')) 
                         <label class="block text-sm text-muted mb-1">Titlu site</label>
                         <input type="text" name="site_title" value="<?= e($settings['site_title']) ?>"
                                class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-1">Descriere tab browser</label>
+                        <input type="text" name="site_tab_description" value="<?= e($settings['site_tab_description'] ?? '') ?>"
+                               placeholder="cele mai bune articole de pe internet"
+                               class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
+                        <p class="text-xs text-muted mt-1">Apare în tab ca: <em><?= e($settings['site_title']) ?> - [descriere]</em></p>
                     </div>
                     <div>
                         <label class="block text-sm text-muted mb-1">Subtitlu</label>
