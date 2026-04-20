@@ -86,7 +86,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
         <h2 id="liveHeading" class="leading-tight tracking-tight text-center text-txt" style="font-size: 34px; font-weight: 800;"><?= e($settings['site_subtitle']) ?></h2>
-        <p id="liveDesc" class="text-muted mt-6 text-center">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate, și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
+        <p id="liveDesc" class="text-muted mt-6 text-center"><?= e($settings['site_desc']) ?></p>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-10 border-b border-muted/20">
@@ -115,8 +115,8 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php if ($i === 3): ?>
         <!-- Email subscription -->
         <div class="my-4 rounded-xl px-6 py-7" style="background-color: <?= e($settings['color_accent']) ?>">
-            <p id="liveNlTitle" class="font-bold text-white">Vrei să primești articolele direct pe email?</p>
-            <p id="liveNlDesc" class="text-white/80 mt-1">Abonează-te la newsletter ca să primești săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
+            <p id="liveNlTitle" class="font-bold text-white"><?= e($settings['nl_title']) ?></p>
+            <p id="liveNlDesc" class="text-white/80 mt-1"><?= e($settings['nl_desc']) ?></p>
             <form id="emailSubForm" class="flex gap-2 mt-4">
                 <input type="email" name="email" required placeholder=""
                        class="flex-1 rounded-lg px-3 py-2.5 text-sm text-txt bg-white focus:outline-none">
@@ -237,6 +237,24 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                     <span class="text-xs text-muted"><?= $label ?></span>
                 </div>
                 <?php endforeach; ?>
+                <div>
+                    <label class="block text-xs text-muted mb-1">Descriere heading</label>
+                    <textarea name="site_desc" rows="3"
+                              oninput="document.getElementById('liveDesc').textContent=this.value"
+                              class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent resize-none"><?= e($settings['site_desc']) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs text-muted mb-1">Titlu newsletter</label>
+                    <input type="text" name="nl_title" value="<?= e($settings['nl_title']) ?>"
+                           oninput="document.getElementById('liveNlTitle').textContent=this.value"
+                           class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label class="block text-xs text-muted mb-1">Descriere newsletter</label>
+                    <textarea name="nl_desc" rows="2"
+                              oninput="document.getElementById('liveNlDesc').textContent=this.value"
+                              class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent resize-none"><?= e($settings['nl_desc']) ?></textarea>
+                </div>
                 <hr class="border-muted/20">
                 <h4 class="font-semibold text-sm">Tipografie</h4>
                 <!-- Device tabs -->
