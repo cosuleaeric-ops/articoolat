@@ -13,7 +13,6 @@ $tags = get_tags();
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-6">
         <a href="/" class="text-muted hover:text-txt text-sm transition-colors">← Inapoi</a>
         <h1 class="text-2xl font-bold mt-4">Adauga un articol</h1>
-        <p class="text-muted text-sm mt-1">Lipeste un link si noi completam restul.</p>
     </header>
 
     <main class="max-w-[36rem] mx-auto px-4 pb-12">
@@ -22,7 +21,7 @@ $tags = get_tags();
             <!-- URL -->
             <div>
                 <label class="block text-sm font-medium mb-1.5">Link articol *</label>
-                <input type="url" name="url" id="urlInput" required placeholder="https://..."
+                <input type="url" name="url" id="urlInput" required placeholder=""
                        class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
                 <p id="fetchStatus" class="text-xs text-muted mt-1 hidden">Se incarca metadata...</p>
             </div>
@@ -54,7 +53,7 @@ $tags = get_tags();
                         <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-muted/20 text-muted text-[10px] font-bold cursor-default" title="Poti adauga articole fara a-ti crea un cont.">i</span>
                     </span>
                 </div>
-                <input type="text" name="submitted_by" required placeholder="username-ul tau"
+                <input type="text" name="submitted_by" required placeholder=""
                        class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
             </div>
 
