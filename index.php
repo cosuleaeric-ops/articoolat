@@ -68,7 +68,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <?php endif; ?>
 
     <!-- Top Bar (floating) -->
-    <div class="sticky top-0 z-50 pt-3 px-4">
+    <div class="sticky z-50 pt-3 px-4 <?= $is_admin ? 'top-[28px]' : 'top-0' ?>">
         <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <svg width="18" height="24" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
