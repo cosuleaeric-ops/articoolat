@@ -35,12 +35,6 @@ $tags = get_tags();
             <!-- Reading time (hidden, auto-filled) -->
             <input type="hidden" name="reading_time" id="readingTimeInput">
 
-            <!-- Preview image -->
-            <div id="imagePreview" class="hidden">
-                <label class="block text-sm font-medium mb-1.5">Preview imagine</label>
-                <img id="previewImg" src="" alt="" class="w-full max-h-48 object-cover rounded-lg bg-surface">
-            </div>
-
             <!-- Username -->
             <div>
                 <div class="flex items-center justify-between mb-1.5">
@@ -95,8 +89,6 @@ $tags = get_tags();
                 if (data.title) document.getElementById('titleInput').value = data.title;
                 if (data.image) {
                     document.getElementById('imageInput').value = data.image;
-                    document.getElementById('previewImg').src = data.image;
-                    document.getElementById('imagePreview').classList.remove('hidden');
                 }
                 if (data.reading_time) {
                     document.getElementById('readingTimeInput').value = data.reading_time;
