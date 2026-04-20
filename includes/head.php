@@ -41,6 +41,14 @@ tailwind.config = {
     .vote-btn.voted { color: <?= e($settings['color_accent']) ?>; }
     .card-hover { transition: all 0.15s ease; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+    #liveDesc { font-size: <?= e($settings['desc_size_desktop'] ?? '16') ?>px; }
+    #liveNlTitle { font-size: <?= e($settings['nl_title_size_desktop'] ?? '18') ?>px; }
+    #liveNlDesc { font-size: <?= e($settings['nl_desc_size_desktop'] ?? '14') ?>px; }
+    @media (max-width: 640px) {
+        #liveDesc { font-size: <?= e($settings['desc_size_mobile'] ?? '15') ?>px; }
+        #liveNlTitle { font-size: <?= e($settings['nl_title_size_mobile'] ?? '16') ?>px; }
+        #liveNlDesc { font-size: <?= e($settings['nl_desc_size_mobile'] ?? '13') ?>px; }
+    }
 </style>
 <?php if (!empty($settings['ga_script'])): ?>
 <?= $settings['ga_script'] ?>

@@ -19,7 +19,13 @@ function load_settings(): array {
         'color_text' => '#1c1917',
         'color_text_muted' => '#78716c',
         'tags' => 'Tehnologie,Startup,Cultură,Știință,Afaceri,Design,Programare,România,Educație,Opinie',
-        'new_days' => 7
+        'new_days' => 7,
+        'desc_size_desktop' => '16',
+        'desc_size_mobile' => '15',
+        'nl_title_size_desktop' => '18',
+        'nl_title_size_mobile' => '16',
+        'nl_desc_size_desktop' => '14',
+        'nl_desc_size_mobile' => '13'
     ];
 
     if (file_exists($file)) {

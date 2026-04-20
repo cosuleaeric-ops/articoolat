@@ -86,7 +86,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
         <h2 id="liveHeading" class="leading-tight tracking-tight text-center text-txt" style="font-size: 34px; font-weight: 800;"><?= e($settings['site_subtitle']) ?></h2>
-        <p class="text-muted mt-6 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate, și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
+        <p id="liveDesc" class="text-muted mt-6 text-center">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate, și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-10 border-b border-muted/20">
@@ -115,8 +115,8 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php if ($i === 3): ?>
         <!-- Email subscription -->
         <div class="my-4 rounded-xl px-6 py-7" style="background-color: <?= e($settings['color_accent']) ?>">
-            <p class="font-bold text-white text-lg">Vrei să primești articolele direct pe email?</p>
-            <p class="text-white/80 text-sm mt-1">Abonează-te la newsletter ca să primești săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
+            <p id="liveNlTitle" class="font-bold text-white">Vrei să primești articolele direct pe email?</p>
+            <p id="liveNlDesc" class="text-white/80 mt-1">Abonează-te la newsletter ca să primești săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
             <form id="emailSubForm" class="flex gap-2 mt-4">
                 <input type="email" name="email" required placeholder=""
                        class="flex-1 rounded-lg px-3 py-2.5 text-sm text-txt bg-white focus:outline-none">
@@ -238,12 +238,56 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                 </div>
                 <?php endforeach; ?>
                 <hr class="border-muted/20">
-                <h4 class="font-semibold text-sm">Font heading</h4>
-                <div>
-                    <label class="block text-xs text-muted mb-1">Dimensiune (px)</label>
-                    <input type="number" name="heading_size" value="<?= e($settings['heading_size'] ?? '36') ?>" min="20" max="60"
-                           oninput="document.getElementById('liveHeading').style.fontSize=this.value+'px'"
-                           class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                <h4 class="font-semibold text-sm">Tipografie</h4>
+                <!-- Device tabs -->
+                <div class="flex rounded-lg overflow-hidden border border-muted/20 text-xs">
+                    <button type="button" id="tabDesktop" onclick="switchTypoTab('desktop')"
+                            class="flex-1 py-1.5 font-medium bg-accent text-white transition-colors">Desktop</button>
+                    <button type="button" id="tabMobile" onclick="switchTypoTab('mobile')"
+                            class="flex-1 py-1.5 font-medium text-muted hover:text-txt transition-colors">Mobile</button>
+                </div>
+                <div id="typoDesktop" class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Heading (px)</label>
+                        <input type="number" name="heading_size" value="<?= e($settings['heading_size'] ?? '34') ?>" min="20" max="70"
+                               oninput="document.getElementById('liveHeading').style.fontSize=this.value+'px'"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Descriere heading (px)</label>
+                        <input type="number" name="desc_size_desktop" value="<?= e($settings['desc_size_desktop'] ?? '16') ?>" min="10" max="30"
+                               oninput="document.getElementById('liveDesc').style.fontSize=this.value+'px'"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Titlu newsletter (px)</label>
+                        <input type="number" name="nl_title_size_desktop" value="<?= e($settings['nl_title_size_desktop'] ?? '18') ?>" min="10" max="30"
+                               oninput="document.getElementById('liveNlTitle').style.fontSize=this.value+'px'"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Descriere newsletter (px)</label>
+                        <input type="number" name="nl_desc_size_desktop" value="<?= e($settings['nl_desc_size_desktop'] ?? '14') ?>" min="10" max="30"
+                               oninput="document.getElementById('liveNlDesc').style.fontSize=this.value+'px'"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                </div>
+                <div id="typoMobile" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Descriere heading (px)</label>
+                        <input type="number" name="desc_size_mobile" value="<?= e($settings['desc_size_mobile'] ?? '15') ?>" min="10" max="30"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Titlu newsletter (px)</label>
+                        <input type="number" name="nl_title_size_mobile" value="<?= e($settings['nl_title_size_mobile'] ?? '16') ?>" min="10" max="30"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-muted mb-1">Descriere newsletter (px)</label>
+                        <input type="number" name="nl_desc_size_mobile" value="<?= e($settings['nl_desc_size_mobile'] ?? '13') ?>" min="10" max="30"
+                               class="w-full bg-bg border border-muted/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+                    </div>
                 </div>
                 <button type="submit" id="saveBtn" class="w-full bg-accent text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
                     Salvează
@@ -325,6 +369,14 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             else if (name === 'muted') css += `.text-muted { color: ${color} !important; } .vote-btn { color: ${color} !important; } .vote-btn.voted, .vote-btn:hover { color: ${liveColor._colors['accent'] || ''} !important; }\n`;
         }
         style.textContent = css;
+    }
+
+    function switchTypoTab(tab) {
+        const isDesktop = tab === 'desktop';
+        document.getElementById('typoDesktop').classList.toggle('hidden', !isDesktop);
+        document.getElementById('typoMobile').classList.toggle('hidden', isDesktop);
+        document.getElementById('tabDesktop').className = 'flex-1 py-1.5 font-medium transition-colors ' + (isDesktop ? 'bg-accent text-white' : 'text-muted hover:text-txt');
+        document.getElementById('tabMobile').className = 'flex-1 py-1.5 font-medium transition-colors ' + (!isDesktop ? 'bg-accent text-white' : 'text-muted hover:text-txt');
     }
 
     document.getElementById('editForm')?.addEventListener('submit', async (e) => {
