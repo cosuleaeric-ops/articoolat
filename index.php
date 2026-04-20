@@ -58,7 +58,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
     <?php if ($is_admin): ?>
     <!-- Admin Top Bar -->
-    <div class="bg-txt text-bg text-xs py-1.5">
+    <div class="sticky top-0 z-40 bg-txt text-bg text-xs py-1.5">
         <div class="max-w-[36rem] mx-auto px-4 flex items-center justify-between">
             <a href="/admin/" class="hover:underline">Panou admin →</a>
             <button onclick="document.getElementById('editPanel').classList.toggle('translate-x-full')"
