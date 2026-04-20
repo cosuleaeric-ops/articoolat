@@ -171,6 +171,15 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             </div>
         </article>
         <?php endforeach; ?>
+
+        <?php if (!empty($articles)): ?>
+        <div class="text-center py-10">
+            <p class="text-muted text-sm mb-4">Atât, momentan...</p>
+            <a href="/submit.php" class="inline-block bg-accent text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                + Adaugă un articol
+            </a>
+        </div>
+        <?php endif; ?>
     </main>
 
     <?php if ($is_admin): ?>
