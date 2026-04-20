@@ -89,17 +89,17 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <p class="text-muted mt-3 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate,<br>și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
 
         <!-- Email subscription -->
-        <div class="mt-6 rounded-xl px-5 py-5" style="background-color: <?= e($settings['color_accent']) ?>">
-            <p class="font-bold text-white text-base">Vrei să primești articolele direct pe email?</p>
-            <p class="text-white/80 text-sm mt-0.5">Vei primi săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
-            <form id="emailSubForm" class="flex gap-2 mt-3">
+        <div class="mt-8 rounded-xl px-6 py-7" style="background-color: <?= e($settings['color_accent']) ?>1a; border: 1.5px solid <?= e($settings['color_accent']) ?>40">
+            <p class="font-bold text-txt text-lg">Vrei să primești articolele direct pe email?</p>
+            <p class="text-muted text-sm mt-1">Vei primi săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
+            <form id="emailSubForm" class="flex gap-2 mt-4">
                 <input type="email" name="email" required placeholder=""
-                       class="flex-1 rounded-lg px-3 py-2 text-sm text-txt bg-white focus:outline-none placeholder-muted/60">
-                <button type="submit" class="bg-white/20 hover:bg-white/30 text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors">
+                       class="flex-1 rounded-lg px-3 py-2.5 text-sm text-txt bg-white border border-muted/20 focus:outline-none focus:border-accent">
+                <button type="submit" class="text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-opacity hover:opacity-90" style="background-color: <?= e($settings['color_accent']) ?>">
                     Abonează-te
                 </button>
             </form>
-            <p id="emailSubMsg" class="text-white/90 text-xs mt-2 hidden"></p>
+            <p id="emailSubMsg" class="text-muted text-xs mt-2 hidden"></p>
         </div>
 
         <!-- Tabs -->
