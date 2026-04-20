@@ -19,10 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && verif
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id']) && verify_csrf($_POST['csrf'] ?? '')) {
     $rt_raw = trim($_POST['reading_time'] ?? '');
     $rt = ($rt_raw !== '' && ctype_digit($rt_raw) && (int)$rt_raw > 0) ? (int)$rt_raw : null;
-    $stmt = $db->prepare("UPDATE articles SET title = :title, description = :desc, tag = :tag, url = :url, reading_time = COALESCE(:rt, reading_time) WHERE id = :id");
+    $stmt = $db->prepare("UPDATE articles SET title = :title, url = :url, reading_time = COALESCE(:rt, reading_time) WHERE id = :id");
     $stmt->bindValue(':title', trim($_POST['title']), SQLITE3_TEXT);
-    $stmt->bindValue(':desc', trim($_POST['description']), SQLITE3_TEXT);
-    $stmt->bindValue(':tag', trim($_POST['tag']), SQLITE3_TEXT);
     $stmt->bindValue(':url', trim($_POST['url']), SQLITE3_TEXT);
     $stmt->bindValue(':rt', $rt, $rt !== null ? SQLITE3_INTEGER : SQLITE3_NULL);
     $stmt->bindValue(':id', intval($_POST['edit_id']), SQLITE3_INTEGER);
@@ -86,19 +84,7 @@ if ($edit_id) {
                     <label class="block text-sm text-muted mb-1">URL</label>
                     <input type="url" name="url" value="<?= e($edit_article['url']) ?>" class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
                 </div>
-                <div>
-                    <label class="block text-sm text-muted mb-1">Descriere</label>
-                    <textarea name="description" rows="2" class="w-full bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent resize-none"><?= e($edit_article['description']) ?></textarea>
-                </div>
                 <div class="flex gap-4">
-                    <div>
-                        <label class="block text-sm text-muted mb-1">Categorie</label>
-                        <select name="tag" class="bg-white border border-muted/20 rounded-lg px-4 py-2 text-txt focus:outline-none focus:border-accent">
-                            <?php foreach ($tags as $t): ?>
-                            <option value="<?= e($t) ?>" <?= $edit_article['tag'] === $t ? 'selected' : '' ?>><?= e($t) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
                     <div>
                         <label class="block text-sm text-muted mb-1">Timp citire (min) — lasă gol pentru a păstra valoarea curentă (<?= (int)($edit_article['reading_time'] ?? 0) ?> min)</label>
                         <input type="number" name="reading_time" min="1" max="120" placeholder="<?= (int)($edit_article['reading_time'] ?? 0) ?>"
@@ -119,7 +105,6 @@ if ($edit_id) {
                     <thead>
                         <tr class="border-b border-muted/20 text-muted text-left">
                             <th class="px-4 py-3 font-medium">Titlu</th>
-                            <th class="px-4 py-3 font-medium">Tag</th>
                             <th class="px-4 py-3 font-medium text-center">Voturi</th>
                             <th class="px-4 py-3 font-medium">Data</th>
                             <th class="px-4 py-3 font-medium">Actiuni</th>
@@ -132,7 +117,6 @@ if ($edit_id) {
                                 <a href="<?= e($article['url']) ?>" target="_blank" class="hover:text-accent transition-colors"><?= e(truncate($article['title'], 60)) ?></a>
                                 <div class="text-xs text-muted"><?= e($article['domain']) ?></div>
                             </td>
-                            <td class="px-4 py-3"><span class="bg-surface px-2 py-0.5 rounded text-xs"><?= e($article['tag']) ?></span></td>
                             <td class="px-4 py-3 text-center font-semibold"><?= $article['votes'] ?></td>
                             <td class="px-4 py-3 text-muted text-xs"><?= date('d.m.Y H:i', strtotime($article['created_at'])) ?></td>
                             <td class="px-4 py-3">

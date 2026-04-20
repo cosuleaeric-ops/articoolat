@@ -15,9 +15,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 $url = trim($input['url'] ?? '');
 $title = trim($input['title'] ?? '');
-$description = trim($input['description'] ?? '');
 $image_url = trim($input['image_url'] ?? '');
-$tag = trim($input['tag'] ?? 'General');
 $submitted_by = trim($input['submitted_by'] ?? '') ?: 'Anonim';
 $reading_time = intval($input['reading_time'] ?? 0);
 if ($reading_time < 1) { $reading_time = 3; } // fallback dacă fetch-meta a eșuat
@@ -44,14 +42,12 @@ if ($stmt->execute()->fetchArray()) {
     exit;
 }
 
-$stmt = $db->prepare("INSERT INTO articles (url, title, description, image_url, domain, tag, submitted_by, reading_time)
-                       VALUES (:url, :title, :desc, :img, :domain, :tag, :by, :rt)");
+$stmt = $db->prepare("INSERT INTO articles (url, title, image_url, domain, submitted_by, reading_time)
+                       VALUES (:url, :title, :img, :domain, :by, :rt)");
 $stmt->bindValue(':url', $url, SQLITE3_TEXT);
 $stmt->bindValue(':title', $title, SQLITE3_TEXT);
-$stmt->bindValue(':desc', $description, SQLITE3_TEXT);
 $stmt->bindValue(':img', $image_url, SQLITE3_TEXT);
 $stmt->bindValue(':domain', $domain, SQLITE3_TEXT);
-$stmt->bindValue(':tag', $tag, SQLITE3_TEXT);
 $stmt->bindValue(':by', $submitted_by, SQLITE3_TEXT);
 $stmt->bindValue(':rt', $reading_time, SQLITE3_INTEGER);
 $stmt->execute();

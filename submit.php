@@ -29,9 +29,6 @@ $tags = get_tags();
             <!-- Title (hidden, auto-filled) -->
             <input type="hidden" name="title" id="titleInput">
 
-            <!-- Description (hidden, auto-filled) -->
-            <input type="hidden" name="description" id="descInput">
-
             <!-- Image URL (hidden, auto-filled) -->
             <input type="hidden" name="image_url" id="imageInput">
 
@@ -96,7 +93,6 @@ $tags = get_tags();
 
             if (data.success) {
                 if (data.title) document.getElementById('titleInput').value = data.title;
-                if (data.description) document.getElementById('descInput').value = data.description;
                 if (data.image) {
                     document.getElementById('imageInput').value = data.image;
                     document.getElementById('previewImg').src = data.image;
