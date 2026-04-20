@@ -27,19 +27,11 @@ $tags = get_tags();
                 <p id="fetchStatus" class="text-xs text-muted mt-1 hidden">Se incarca metadata...</p>
             </div>
 
-            <!-- Title -->
-            <div>
-                <label class="block text-sm font-medium mb-1.5">Titlu *</label>
-                <input type="text" name="title" id="titleInput" required placeholder="Titlul articolului"
-                       class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
-            </div>
+            <!-- Title (hidden, auto-filled) -->
+            <input type="hidden" name="title" id="titleInput">
 
-            <!-- Description -->
-            <div>
-                <label class="block text-sm font-medium mb-1.5">Descriere scurta</label>
-                <textarea name="description" id="descInput" rows="3" placeholder="Despre ce e articolul..."
-                          class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
-            </div>
+            <!-- Description (hidden, auto-filled) -->
+            <input type="hidden" name="description" id="descInput">
 
             <!-- Image URL (hidden, auto-filled) -->
             <input type="hidden" name="image_url" id="imageInput">
@@ -53,17 +45,24 @@ $tags = get_tags();
                 <img id="previewImg" src="" alt="" class="w-full max-h-48 object-cover rounded-lg bg-surface">
             </div>
 
-            <!-- Nickname -->
+            <!-- Username -->
             <div>
-                <label class="block text-sm font-medium mb-1.5">Numele tau</label>
-                <input type="text" name="submitted_by" placeholder="Anonim"
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-sm font-medium">Username *</label>
+                    <span class="text-xs text-muted flex items-center gap-1">
+                        Nu ai nevoie de cont
+                        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-muted/20 text-muted text-[10px] font-bold cursor-default" title="Poti adauga articole fara a-ti crea un cont.">i</span>
+                    </span>
+                </div>
+                <input type="text" name="submitted_by" required placeholder="username-ul tau"
                        class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
             </div>
 
             <!-- Submit -->
             <button type="submit" id="submitBtn"
-                    class="w-full bg-accent text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                    class="w-full bg-accent text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                 Adauga articol
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
 
             <p id="formError" class="text-red-400 text-sm hidden"></p>
@@ -152,7 +151,7 @@ $tags = get_tags();
         }
 
         btn.disabled = false;
-        btn.textContent = 'Adauga articol';
+        btn.innerHTML = 'Adauga articol <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
     });
     </script>
 </body>
