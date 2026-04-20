@@ -85,8 +85,8 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
-        <h2 id="liveHeading" class="font-bold leading-tight tracking-tight text-center" style="font-size: <?= e($settings['heading_size'] ?? '36') ?>px"><?= e($settings['site_subtitle']) ?></h2>
-        <p class="text-muted text-sm mt-3 text-center">Noi le-am adunat pentru tine. Adaugă-ți și tu articolele preferate, și lasă un like celor mai bune.</p>
+        <h2 id="liveHeading" class="leading-tight tracking-tight text-center text-txt" style="font-size: 34px; font-weight: 800;"><?= e($settings['site_subtitle']) ?></h2>
+        <p class="text-muted mt-3 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. Adaugă-ți și tu articolele preferate, și lasă un like celor mai bune.</p>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-6 border-b border-muted/20">
