@@ -86,7 +86,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
         <h2 id="liveHeading" class="leading-tight tracking-tight text-center text-txt" style="font-size: 34px; font-weight: 800;"><?= e($settings['site_subtitle']) ?></h2>
-        <p class="text-muted mt-6 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate,<br>și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
+        <p class="text-muted mt-6 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate, și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-10 border-b border-muted/20">
