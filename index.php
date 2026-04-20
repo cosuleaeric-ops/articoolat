@@ -93,7 +93,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             <p class="font-bold text-white text-base">Vrei să primești articolele direct pe email?</p>
             <p class="text-white/80 text-sm mt-0.5">Vei primi săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
             <form id="emailSubForm" class="flex gap-2 mt-3">
-                <input type="email" name="email" required placeholder="adresa@email.com"
+                <input type="email" name="email" required placeholder=""
                        class="flex-1 rounded-lg px-3 py-2 text-sm text-txt bg-white focus:outline-none placeholder-muted/60">
                 <button type="submit" class="bg-white/20 hover:bg-white/30 text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors">
                     Abonează-te
