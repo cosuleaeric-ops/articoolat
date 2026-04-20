@@ -4,6 +4,7 @@ $nav_items = [
     'index' => ['label' => 'Dashboard', 'icon' => '📊'],
     'articles' => ['label' => 'Articole', 'icon' => '📝'],
     'appearance' => ['label' => 'Aspect', 'icon' => '🎨'],
+    'subscribers' => ['label' => 'Newsletter', 'icon' => '✉️'],
     'settings' => ['label' => 'Setari', 'icon' => '⚙️'],
 ];
 ?>
