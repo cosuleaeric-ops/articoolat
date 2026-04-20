@@ -86,7 +86,21 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <!-- Header -->
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
         <h2 id="liveHeading" class="leading-tight tracking-tight text-center text-txt" style="font-size: 34px; font-weight: 800;"><?= e($settings['site_subtitle']) ?></h2>
-        <p class="text-muted mt-3 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. Adaugă-ți și tu articolele preferate, și lasă un like celor mai bune.</p>
+        <p class="text-muted mt-3 text-center" style="font-size: 16px;">Noi le-am adunat pentru tine. <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">Adaugă-ți și tu</span> articolele preferate, și <span style="text-decoration: underline; text-decoration-color: <?= e($settings['color_accent']) ?>; text-underline-offset: 3px;">lasă un like</span> celor mai bune.</p>
+
+        <!-- Email subscription -->
+        <div class="mt-6 rounded-xl px-5 py-5" style="background-color: <?= e($settings['color_accent']) ?>">
+            <p class="font-bold text-white text-base">Vrei să primești articolele direct pe email?</p>
+            <p class="text-white/80 text-sm mt-0.5">Vei primi săptămânal cele mai bune 3 articole regăsite pe Articoolat.</p>
+            <form id="emailSubForm" class="flex gap-2 mt-3">
+                <input type="email" name="email" required placeholder="adresa@email.com"
+                       class="flex-1 rounded-lg px-3 py-2 text-sm text-txt bg-white focus:outline-none placeholder-muted/60">
+                <button type="submit" class="bg-white/20 hover:bg-white/30 text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors">
+                    Abonează-te
+                </button>
+            </form>
+            <p id="emailSubMsg" class="text-white/90 text-xs mt-2 hidden"></p>
+        </div>
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-6 border-b border-muted/20">
@@ -235,6 +249,26 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     </footer>
 
     <script>
+    document.getElementById('emailSubForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('emailSubMsg');
+        const email = e.target.email.value.trim();
+        try {
+            const res = await fetch('/api/subscribe.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            msg.textContent = data.success ? 'Te-ai abonat cu succes!' : (data.error || 'Eroare la abonare.');
+            msg.classList.remove('hidden');
+            if (data.success) e.target.reset();
+        } catch {
+            msg.textContent = 'Eroare de rețea.';
+            msg.classList.remove('hidden');
+        }
+    });
+
     async function vote(articleId, btn) {
         try {
             const res = await fetch('/api/vote.php', {
