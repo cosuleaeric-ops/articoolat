@@ -88,6 +88,9 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-4">
         <h2 id="liveHeading" class="leading-tight tracking-tight text-center text-txt" style="font-size: 34px; font-weight: 800;"><?= e($settings['site_subtitle']) ?></h2>
         <p id="liveDesc" class="text-muted mt-6 text-center"><?= e($settings['site_desc']) ?></p>
+        <div class="flex justify-center mt-5">
+            <div class="h-0.5 w-16 rounded-full bg-accent"></div>
+        </div>
 
         <!-- Tabs -->
         <nav class="flex gap-2 border-b border-muted/20" style="margin-top: 25px;">
