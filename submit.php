@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/admin/auth.php';
 $settings = load_settings();
 $tags = get_tags();
 $is_admin = is_authenticated();
