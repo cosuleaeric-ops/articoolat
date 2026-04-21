@@ -10,9 +10,24 @@ $tags = get_tags();
 </head>
 <body class="bg-bg text-txt min-h-screen">
 
+    <!-- Top Bar -->
+    <div class="sticky top-0 z-50 pt-3 px-4">
+        <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <svg width="18" height="24" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4h32a2 2 0 0 1 2 2v42L20 38 2 48V6a2 2 0 0 1 2-2z" fill="<?= e($settings['color_accent']) ?>"/>
+                    <path d="M13 20h14M13 27h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <span class="text-xl font-bold tracking-tight"><?= e($settings['site_title']) ?></span>
+            </a>
+            <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
+                + Articol nou
+            </a>
+        </nav>
+    </div>
+
     <header class="max-w-[36rem] mx-auto px-4 pt-8 pb-6">
-        <a href="/" class="text-muted hover:text-txt text-sm transition-colors">← Inapoi</a>
-        <h1 class="text-2xl font-bold mt-4">Adauga un articol</h1>
+        <h1 class="text-2xl font-bold">Adauga un articol</h1>
     </header>
 
     <main class="max-w-[36rem] mx-auto px-4 pb-12">
@@ -20,7 +35,7 @@ $tags = get_tags();
 
             <!-- URL -->
             <div>
-                <label class="block text-sm font-medium mb-1.5">Link articol *</label>
+                <label class="block text-sm font-medium mb-1.5">Link articol <span class="text-red-500">*</span></label>
                 <input type="url" name="url" id="urlInput" required placeholder=""
                        class="w-full bg-surface border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent transition-colors">
                 <p id="fetchStatus" class="text-xs text-muted mt-1 hidden">Se incarca metadata...</p>
@@ -38,7 +53,7 @@ $tags = get_tags();
             <!-- Username -->
             <div>
                 <div class="flex items-center justify-between mb-1.5">
-                    <label class="text-sm font-medium">Username *</label>
+                    <label class="text-sm font-medium">Username <span class="text-red-500">*</span></label>
                     <span class="text-xs text-muted flex items-center gap-1">
                         Nu ai nevoie de cont
                         <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-muted/20 text-muted text-[10px] font-bold cursor-default" title="Poti adauga articole fara a-ti crea un cont.">i</span>
