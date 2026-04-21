@@ -72,7 +72,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <svg width="18" height="24" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 4h32a2 2 0 0 1 2 2v42L20 38 2 48V6a2 2 0 0 1 2-2z" fill="<?= e($settings['color_accent']) ?>"/>
+                    <path id="liveLogoPath" d="M4 4h32a2 2 0 0 1 2 2v42L20 38 2 48V6a2 2 0 0 1 2-2z" fill="<?= e($settings['color_accent']) ?>"/>
                     <path d="M13 20h14M13 27h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>
                 <span class="text-xl font-bold tracking-tight"><?= e($settings['site_title']) ?></span>
@@ -114,7 +114,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php foreach ($articles as $i => $article): ?>
         <?php if ($i === 3): ?>
         <!-- Email subscription -->
-        <div class="my-4 rounded-xl px-6 py-7" style="background-color: <?= e($settings['color_accent']) ?>">
+        <div id="liveNlBg" class="my-4 rounded-xl px-6 py-7" style="background-color: <?= e($settings['color_accent']) ?>">
             <p id="liveNlTitle" class="font-bold text-white"><?= e($settings['nl_title']) ?></p>
             <p id="liveNlDesc" class="text-white/80 mt-1"><?= e($settings['nl_desc']) ?></p>
             <form id="emailSubForm" class="flex gap-2 mt-4">
@@ -382,7 +382,11 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         for (const [name, color] of Object.entries(liveColor._colors)) {
             if (name === 'bg') css += `.bg-bg { background-color: ${color} !important; }\n`;
             else if (name === 'surface') css += `.bg-surface, .bg-surface\\/95 { background-color: ${color} !important; }\n`;
-            else if (name === 'accent') css += `.text-accent, .border-accent { color: ${color} !important; } .bg-accent { background-color: ${color} !important; } .vote-btn.voted, .vote-btn:hover { color: ${color} !important; }\n`;
+            else if (name === 'accent') {
+                css += `.text-accent { color: ${color} !important; } .border-accent { border-color: ${color} !important; } .bg-accent { background-color: ${color} !important; } .vote-btn.voted, .vote-btn:hover { color: ${color} !important; }\n`;
+                document.getElementById('liveNlBg').style.backgroundColor = color;
+                document.getElementById('liveLogoPath').setAttribute('fill', color);
+            }
             else if (name === 'txt') css += `.text-txt { color: ${color} !important; } .bg-txt { background-color: ${color} !important; }\n`;
             else if (name === 'muted') css += `.text-muted { color: ${color} !important; } .vote-btn { color: ${color} !important; } .vote-btn.voted, .vote-btn:hover { color: ${liveColor._colors['accent'] || ''} !important; }\n`;
         }
