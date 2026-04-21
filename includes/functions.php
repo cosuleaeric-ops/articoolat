@@ -340,6 +340,9 @@ function compute_reading_time(string $url): int {
             $reader = fetch_article_text_via_reader($url);
         }
 
+        $declared = extract_declared_reading_time($reader ?: $html);
+        if ($declared !== null) return $declared;
+
         $words_direct = $html ? count_words(extract_article_text($html)) : 0;
         $words_reader = $reader ? count_words($reader) : 0;
         // Când ambele surse au suficient text, ia minimul: ambele pot fi umflate
@@ -351,8 +354,6 @@ function compute_reading_time(string $url): int {
         }
 
         if ($words < 200) {
-            $declared = extract_declared_reading_time($reader ?: $html);
-            if ($declared !== null) return $declared;
             return 3;
         }
     }
