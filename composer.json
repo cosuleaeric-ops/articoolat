@@ -1,0 +1,7 @@
+{
+    "name": "articoolat/articoolat",
+    "minimum-stability": "stable",
+    "require": {
+        "fivefilters/readability.php": "^3.3"
+    }
+}

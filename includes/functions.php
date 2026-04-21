@@ -1,5 +1,25 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use fivefilters\Readability\Readability;
+use fivefilters\Readability\ParseException;
+use fivefilters\Readability\Configuration;
+
+function extract_article_text_readability(string $html, string $url = ''): string {
+    if (!$html) return '';
+    try {
+        $config = new Configuration();
+        if ($url) $config->setOriginalURL($url);
+        $readability = new Readability($config);
+        $readability->parse($html);
+        $content = $readability->getContent() ?: '';
+        return $content ? strip_tags($content) : '';
+    } catch (ParseException $e) {
+        return '';
+    }
+}
+
 function load_settings(): array {
     $file = __DIR__ . '/../data/settings.json';
     $defaults = [
@@ -333,24 +353,28 @@ function compute_reading_time(string $url): int {
         $html = '';
         $reader = '';
 
+        $html = '';
+        $reader = '';
+
         if (is_js_heavy_domain($url)) {
             $reader = fetch_article_text_via_reader($url);
         } else {
             $html = fetch_article_html($url) ?: '';
-            $reader = fetch_article_text_via_reader($url);
         }
 
-        $declared = extract_declared_reading_time($reader ?: $html);
+        $declared = extract_declared_reading_time($html ?: $reader);
         if ($declared !== null) return $declared;
 
-        $words_direct = $html ? count_words(extract_article_text($html)) : 0;
-        $words_reader = $reader ? count_words($reader) : 0;
-        // Când ambele surse au suficient text, ia minimul: ambele pot fi umflate
-        // (direct: HTML nesemantic; jina: articole recomandate), niciuna nu e deflată
-        if ($words_direct >= 200 && $words_reader >= 200) {
-            $words = max($words, min($words_direct, $words_reader));
+        // Readability (Mozilla algoritm) — principala sursă pentru site-uri normale
+        $words_readability = $html ? count_words(extract_article_text_readability($html, $url)) : 0;
+
+        // Jina Reader — fallback pentru JS-heavy sau când Readability returnează prea puțin
+        if ($words_readability < 200) {
+            $reader = $reader ?: fetch_article_text_via_reader($url);
+            $words_reader = $reader ? count_words($reader) : 0;
+            $words = max($words, $words_readability, $words_reader);
         } else {
-            $words = max($words, $words_direct, $words_reader);
+            $words = max($words, $words_readability);
         }
 
         if ($words < 200) {
