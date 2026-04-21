@@ -77,7 +77,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
                 </svg>
                 <span class="text-xl font-bold tracking-tight"><?= e($settings['site_title']) ?></span>
             </a>
-            <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
+            <a href="/submit" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
                 + Articol nou
             </a>
         </nav>
@@ -107,7 +107,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php if (empty($articles)): ?>
         <div class="text-center py-16">
             <p class="text-muted text-lg">Niciun articol inca.</p>
-            <a href="/submit.php" class="text-accent hover:underline mt-2 inline-block">Fii primul care adauga unul!</a>
+            <a href="/submit" class="text-accent hover:underline mt-2 inline-block">Fii primul care adauga unul!</a>
         </div>
         <?php endif; ?>
 
@@ -179,7 +179,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
         <?php if (!empty($articles)): ?>
         <div class="text-center py-10">
             <p class="text-muted text-sm mb-4">Atât, momentan...</p>
-            <a href="/submit.php" class="inline-block bg-accent text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity">
+            <a href="/submit" class="inline-block bg-accent text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity">
                 + Adaugă un articol
             </a>
         </div>

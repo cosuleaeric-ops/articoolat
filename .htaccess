@@ -7,6 +7,9 @@ RewriteRule ^data/ - [F,L]
 # Block access to includes directory
 RewriteRule ^includes/ - [F,L]
 
+# Clean URLs
+RewriteRule ^submit$ submit.php [L]
+
 # Force HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

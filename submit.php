@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/functions.php';
 $settings = load_settings();
 $tags = get_tags();
+$is_admin = is_authenticated();
 ?>
 <!DOCTYPE html>
 <html lang="ro">
@@ -10,8 +11,17 @@ $tags = get_tags();
 </head>
 <body class="bg-bg text-txt min-h-screen">
 
+    <?php if ($is_admin): ?>
+    <!-- Admin Top Bar -->
+    <div class="sticky top-0 z-40 bg-txt text-bg text-xs py-1.5">
+        <div class="max-w-[36rem] mx-auto px-4 flex items-center justify-between">
+            <a href="/admin/" class="hover:underline">Panou admin →</a>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Top Bar -->
-    <div class="sticky top-0 z-50 pt-3 px-4">
+    <div class="sticky z-50 pt-3 px-4 <?= $is_admin ? 'top-[28px]' : 'top-0' ?>">
         <nav class="max-w-[36rem] mx-auto bg-surface/95 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.1)] rounded-xl px-5 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <svg width="18" height="24" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -20,7 +30,7 @@ $tags = get_tags();
                 </svg>
                 <span class="text-xl font-bold tracking-tight"><?= e($settings['site_title']) ?></span>
             </a>
-            <a href="/submit.php" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
+            <a href="/submit" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
                 + Articol nou
             </a>
         </nav>
