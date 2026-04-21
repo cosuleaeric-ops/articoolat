@@ -10,6 +10,8 @@ RewriteRule ^includes/ - [F,L]
 
 # Clean URLs
 RewriteRule ^articol-nou$ submit.php [L]
+RewriteRule ^noi$ index.php?tab=new [L,QSA]
+RewriteRule ^top$ index.php?tab=top [L,QSA]
 
 # Force HTTPS
 RewriteCond %{HTTPS} off

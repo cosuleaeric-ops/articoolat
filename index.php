@@ -7,7 +7,8 @@ $is_admin = is_authenticated();
 $db = get_db();
 $settings = load_settings();
 
-$tab = $_GET['tab'] ?? 'new';
+$path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+$tab = match($path) { 'top' => 'top', default => $_GET['tab'] ?? 'new' };
 $top_period = $_GET['period'] ?? 'all';
 
 // Build query based on tab
@@ -90,11 +91,11 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
         <!-- Tabs -->
         <nav class="flex gap-2 mt-10 border-b border-muted/20">
-            <a href="/?tab=new"
+            <a href="/noi"
                class="px-5 py-3 text-base font-semibold border-b-2 transition-colors <?= $tab === 'new' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
                 <svg class="inline w-4 h-4 -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/></svg> Noi
             </a>
-            <a href="/?tab=top"
+            <a href="/top"
                class="px-5 py-3 text-base font-semibold border-b-2 transition-colors <?= $tab === 'top' ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-txt' ?>">
                 <svg class="inline w-4 h-4 -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> Top
             </a>
