@@ -121,7 +121,7 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
             <form id="emailSubForm" class="flex flex-col sm:flex-row gap-2 mt-4">
                 <input type="email" name="email" required placeholder=""
                        class="flex-1 rounded-lg px-3 py-2.5 text-sm text-txt bg-white focus:outline-none">
-                <button type="submit" class="bg-white/20 hover:bg-white/30 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors">
+                <button type="submit" class="bg-white/50 hover:bg-white/60 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors">
                     Abonează-te
                 </button>
             </form>
