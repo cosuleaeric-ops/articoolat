@@ -57,8 +57,14 @@ if (!is_authenticated()):
         <p class="text-red-400 text-sm mb-4"><?= e($error) ?></p>
         <?php endif; ?>
         <form method="POST">
-            <input type="password" name="password" required autofocus placeholder="Parola"
-                   class="w-full bg-white border border-muted/20 rounded-lg px-4 py-3 text-txt placeholder-muted focus:outline-none focus:border-accent mb-4">
+            <div class="relative mb-4">
+                <input type="password" id="passwordInput" name="password" required autofocus placeholder="Parola"
+                       class="w-full bg-white border border-muted/20 rounded-lg px-4 py-3 pr-12 text-txt placeholder-muted focus:outline-none focus:border-accent">
+                <button type="button" onmousedown="document.getElementById('passwordInput').type='text'" onmouseup="document.getElementById('passwordInput').type='password'" onmouseleave="document.getElementById('passwordInput').type='password'"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-txt transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </button>
+            </div>
             <button type="submit" class="w-full bg-accent text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
                 <?= empty($settings['admin_password_hash']) ? 'Seteaza parola' : 'Conecteaza-te' ?>
             </button>
