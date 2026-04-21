@@ -159,7 +159,11 @@ while ($v = $vr->fetchArray(SQLITE3_ASSOC)) {
 
             <!-- Thumbnail -->
             <div class="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-muted/10">
-                <?php if ($thumb): ?>
+                <?php if (in_array($article['domain'], ['x.com', 'twitter.com'])): ?>
+                <div class="w-14 h-14 flex items-center justify-center bg-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-7 h-7"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.26 5.632L18.245 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </div>
+                <?php elseif ($thumb): ?>
                 <img src="<?= e($thumb) ?>" alt="" loading="lazy"
                      class="w-14 h-14 object-cover"
                      onerror="this.parentElement.innerHTML='<div class=\'w-14 h-14 flex items-center justify-center bg-accent/10 text-accent font-bold text-lg\'><?= strtoupper(mb_substr($article['domain'], 0, 1)) ?></div>'">
