@@ -30,7 +30,7 @@ $is_admin = is_authenticated();
                 </svg>
                 <span class="text-xl font-bold tracking-tight"><?= e($settings['site_title']) ?></span>
             </a>
-            <a href="/submit" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
+            <a href="/articol-nou" class="bg-accent text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
                 + Articol nou
             </a>
         </nav>

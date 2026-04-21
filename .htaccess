@@ -1,5 +1,6 @@
 Options -Indexes
 RewriteEngine On
+RewriteBase /
 
 # Block access to data directory
 RewriteRule ^data/ - [F,L]
@@ -8,7 +9,7 @@ RewriteRule ^data/ - [F,L]
 RewriteRule ^includes/ - [F,L]
 
 # Clean URLs
-RewriteRule ^submit$ submit.php [L]
+RewriteRule ^articol-nou$ submit.php [L]
 
 # Force HTTPS
 RewriteCond %{HTTPS} off
