@@ -342,9 +342,10 @@ function compute_reading_time(string $url): int {
 
         $words_direct = $html ? count_words(extract_article_text($html)) : 0;
         $words_reader = $reader ? count_words($reader) : 0;
-        // Prefer direct extraction (mai precisă); Jina Reader include des conținut extra
-        if ($words_direct >= 200) {
-            $words = max($words, $words_direct);
+        // Când ambele surse au suficient text, ia minimul: ambele pot fi umflate
+        // (direct: HTML nesemantic; jina: articole recomandate), niciuna nu e deflată
+        if ($words_direct >= 200 && $words_reader >= 200) {
+            $words = max($words, min($words_direct, $words_reader));
         } else {
             $words = max($words, $words_direct, $words_reader);
         }
