@@ -53,3 +53,9 @@ tailwind.config = {
 <?php if (!empty($settings['ga_script'])): ?>
 <?= $settings['ga_script'] ?>
 <?php endif; ?>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-TXm7NNQyVaFyusWXTFO9X.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
