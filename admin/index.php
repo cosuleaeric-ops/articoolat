@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     if ($valid) {
         $cookie = hash_hmac('sha256', 'art_admin_ok', $settings['auth_secret']);
         setcookie('art_auth', $cookie, [
-            'expires' => time() + 86400 * 30,
+            'expires' => time() + 86400 * 365 * 10,
             'path' => '/',
             'httponly' => true,
             'samesite' => 'Strict'
