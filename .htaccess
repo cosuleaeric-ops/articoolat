@@ -1,0 +1,18 @@
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Block access to data directory
+RewriteRule ^data/ - [F,L]
+
+# Block access to includes directory
+RewriteRule ^includes/ - [F,L]
+
+# Clean URLs
+RewriteRule ^articol-nou$ submit.php [L]
+RewriteRule ^noi$ index.php?tab=new [L,QSA]
+RewriteRule ^top$ index.php?tab=top [L,QSA]
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
